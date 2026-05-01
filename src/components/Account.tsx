@@ -6,18 +6,20 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.redirectTo ?? '/account';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     login(email);
-    navigate('/account');
+    navigate(redirectTo);
   };
 
   return (

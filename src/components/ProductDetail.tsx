@@ -3,17 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import React, { useState, useMemo } from 'react';
 import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ChevronLeft, Minus, Plus, Heart, Share2, Info, Truck, RefreshCw } from 'lucide-react';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   
   const product = useMemo(() => PRODUCTS.find(p => p.id === id), [id]);
   
@@ -33,6 +36,13 @@ export default function ProductDetail() {
   }
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      navigate('/login', {
+        state: { redirectTo: location.pathname + location.search },
+      });
+      return;
+    }
+
     if (product.variants?.sizes && !selectedSize) {
       alert('Please select a size');
       return;
