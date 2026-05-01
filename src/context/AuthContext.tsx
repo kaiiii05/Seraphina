@@ -14,6 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string) => void;
+  register: (name: string, email: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -23,19 +24,30 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
+  const getMemberSinceLabel = () =>
+    new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
   const login = (email: string) => {
     // Simulating a successful login
     setUser({
       name: 'Julian Vane',
       email: email,
-      memberSince: 'October 2025'
+      memberSince: getMemberSinceLabel(),
+    });
+  };
+
+  const register = (name: string, email: string) => {
+    setUser({
+      name,
+      email,
+      memberSince: getMemberSinceLabel(),
     });
   };
 
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

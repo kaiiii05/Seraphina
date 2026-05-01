@@ -10,15 +10,21 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
 
 export function Login() {
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = location.state?.redirectTo ?? '/account';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email);
+    if (mode === 'signup') {
+      register(name, email);
+    } else {
+      login(email);
+    }
     navigate(redirectTo);
   };
 
@@ -30,11 +36,26 @@ export function Login() {
         className="w-full max-w-md space-y-12 text-center"
       >
         <div className="space-y-4">
-          <h1 className="text-5xl font-serif">Sign In</h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">Access your Seraphina Profile</p>
+          <h1 className="text-5xl font-serif">{mode === 'signup' ? 'Create Account' : 'Sign In'}</h1>
+          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">
+            {mode === 'signup' ? 'Join the Seraphina House' : 'Access your Seraphina Profile'}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8 text-left">
+          {mode === 'signup' && (
+            <div className="space-y-2">
+              <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">Full Name</label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-luxury-neutral/40 border-b border-luxury-border py-4 px-0 text-sm focus:outline-none focus:border-luxury-black transition-all placeholder:opacity-20 font-light"
+                placeholder="Enter your name"
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">Email Address</label>
             <input 
@@ -46,13 +67,21 @@ export function Login() {
               placeholder="Enter your email"
             />
           </div>
-          <button type="submit" className="w-full btn-luxury">Continue</button>
+          <button type="submit" className="w-full btn-luxury">
+            {mode === 'signup' ? 'Create Account' : 'Continue'}
+          </button>
         </form>
 
         <div className="pt-8 border-t border-luxury-border">
           <p className="text-[10px] opacity-40 uppercase tracking-widest leading-loose">
-            New to Seraphina? <br />
-            <span className="text-luxury-black font-bold cursor-pointer hover:underline underline-offset-4">Create an Account</span>
+            {mode === 'signup' ? 'Already have an account?' : 'New to Seraphina?'} <br />
+            <button
+              type="button"
+              onClick={() => setMode(mode === 'signup' ? 'signin' : 'signup')}
+              className="text-luxury-black font-bold hover:underline underline-offset-4"
+            >
+              {mode === 'signup' ? 'Sign In' : 'Create an Account'}
+            </button>
           </p>
         </div>
       </motion.div>
