@@ -13,6 +13,7 @@ export function Login() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login, register } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,9 +22,9 @@ export function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === 'signup') {
-      register(name, email);
+      register(name, email, password);
     } else {
-      login(email);
+      login(email, password);
     }
     navigate(redirectTo);
   };
@@ -65,6 +66,18 @@ export function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-luxury-neutral/40 border-b border-luxury-border py-4 px-0 text-sm focus:outline-none focus:border-luxury-black transition-all placeholder:opacity-20 font-light"
               placeholder="Enter your email"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">Password</label>
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-luxury-neutral/40 border-b border-luxury-border py-4 px-0 text-sm focus:outline-none focus:border-luxury-black transition-all placeholder:opacity-20 font-light"
+              placeholder="Enter your password"
             />
           </div>
           <button type="submit" className="w-full btn-luxury">

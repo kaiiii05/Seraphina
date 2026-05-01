@@ -13,8 +13,8 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string) => void;
-  register: (name: string, email: string) => void;
+  login: (email: string, password: string) => void;
+  register: (name: string, email: string, password: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -27,7 +27,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getMemberSinceLabel = () =>
     new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-  const login = (email: string) => {
+  const login = (email: string, password: string) => {
+    if (!password.trim()) {
+      return;
+    }
     // Simulating a successful login
     setUser({
       name: 'Julian Vane',
@@ -36,7 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const register = (name: string, email: string) => {
+  const register = (name: string, email: string, password: string) => {
+    if (!password.trim()) {
+      return;
+    }
     setUser({
       name,
       email,
