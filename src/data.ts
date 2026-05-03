@@ -9,7 +9,7 @@ export const PRODUCTS: Product[] = [
   {
     id: '1',
     name: 'L’ÉLÉGANCE SILK GOWN',
-    price: 3450,
+    price: 193200,
     category: 'Women',
     description: 'A masterpiece of silhouette and texture, this floor-length gown is crafted from the finest Italian silk, featuring a delicate hand-draped bodice and a dramatic flowing skirt.',
     images: [
@@ -27,7 +27,7 @@ export const PRODUCTS: Product[] = [
   {
     id: '2',
     name: 'CHRONOS VELVET BLAZER',
-    price: 2800,
+    price: 156800,
     category: 'Men',
     description: 'The epitome of modern tailoring, this velvet blazer features silk-satin lapels and a sharp, structured shoulder. Perfect for evening affairs that require a touch of distinction.',
     images: [
@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
   {
     id: '5',
     name: 'RENAISSANCE WOOL COAT',
-    price: 3100,
+    price: 173600,
     category: 'Women',
     description: 'Crafted from pure cashmere-wool blend, this coat redefines winter elegance with its oversized silhouette and signature belted waist.',
     images: [
@@ -63,7 +63,7 @@ export const PRODUCTS: Product[] = [
   {
     id: '6',
     name: 'HERITAGE LEATHER LOAFERS',
-    price: 950,
+    price: 53200,
     category: 'Men',
     description: 'Classic loafers refined for the modern gentleman. Features hand-burnished leather and a sleek almond-toe profile.',
     images: [
