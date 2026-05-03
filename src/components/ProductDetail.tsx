@@ -7,6 +7,7 @@ import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import React, { useState, useMemo } from 'react';
 import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
+import { formatPeso } from '../utils/formatPeso';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ChevronLeft, Minus, Plus, Heart, Share2, Info, Truck, RefreshCw } from 'lucide-react';
@@ -94,7 +95,7 @@ export default function ProductDetail() {
               <header className="space-y-4">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-luxury-gold font-bold">{product.category}</p>
                 <h1 className="text-4xl md:text-5xl font-serif tracking-tight">{product.name}</h1>
-                <p className="text-xl font-medium tracking-widest">${product.price.toLocaleString()}</p>
+                <p className="text-xl font-medium tracking-widest">{formatPeso(product.price)}</p>
               </header>
 
               <div className="space-y-8">
@@ -224,7 +225,7 @@ export default function ProductDetail() {
                       <Truck size={14} className="opacity-40" />
                       <div>
                         <p className="font-medium">Complimentary Shipping</p>
-                        <p>Enjoy free standard delivery on all orders over $500.</p>
+                        <p>Enjoy free standard delivery on all orders over {formatPeso(500)}.</p>
                       </div>
                     </div>
                     <div className="flex gap-4">
@@ -256,7 +257,7 @@ export default function ProductDetail() {
                   />
                 </div>
                 <h4 className="text-[10px] uppercase tracking-widest font-bold">{p.name}</h4>
-                <p className="text-[10px] font-medium">${p.price.toLocaleString()}</p>
+                <p className="text-[10px] font-medium">{formatPeso(p.price)}</p>
               </Link>
             ))}
           </div>

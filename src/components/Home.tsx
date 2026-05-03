@@ -6,6 +6,7 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS } from '../data';
+import { formatPeso } from '../utils/formatPeso';
 import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
@@ -79,7 +80,7 @@ export default function Home() {
           >
             <div className="flex justify-between items-start">
               <h2 className="text-3xl font-serif tracking-wide leading-tight">Lady Seraphina <br />Signature Gown</h2>
-              <span className="text-lg font-light tracking-tighter">$4,800.00</span>
+              <span className="text-lg font-light tracking-tighter">{formatPeso(4800)}</span>
             </div>
             <p className="text-[11px] text-black/50 uppercase tracking-[0.1em]">Noir Cannage Silk with Gold-Finish Metal</p>
             
@@ -185,7 +186,7 @@ export default function Home() {
                 <div className="mt-6 text-center space-y-2">
                   <p className="text-[10px] uppercase tracking-widest opacity-50 font-semibold">{product.category}</p>
                   <h3 className="text-lg font-serif tracking-wide">{product.name}</h3>
-                  <p className="text-xs font-medium tracking-widest">${product.price.toLocaleString()}</p>
+                  <p className="text-xs font-medium tracking-widest">{formatPeso(product.price)}</p>
                 </div>
               </motion.div>
             ))}

@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { formatPeso } from '../utils/formatPeso';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
 
 export function Login() {
@@ -151,7 +152,7 @@ export function Account() {
                   </div>
                   <div className="flex items-center gap-12">
                     <div className="text-right">
-                      <p className="text-sm font-medium">${order.total.toLocaleString()}</p>
+                      <p className="text-sm font-medium">{formatPeso(order.total)}</p>
                       <p className="text-[10px] uppercase tracking-widest text-luxury-gold font-bold">{order.status}</p>
                     </div>
                     <ChevronRight size={16} className="opacity-20 group-hover:opacity-100 transition-opacity" />

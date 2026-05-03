@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ShieldCheck, Truck, CreditCard, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { formatPeso } from '../utils/formatPeso';
 
 type Step = 'shipping' | 'payment' | 'confirmation';
 
@@ -185,7 +186,7 @@ export default function Checkout() {
                             <div className="flex-1 space-y-1">
                               <h4 className="text-[10px] font-bold uppercase tracking-widest leading-tight">{item.name}</h4>
                               <p className="text-[9px] opacity-40 uppercase tracking-widest">Qty: {item.quantity} • {item.selectedSize || 'Standard'}</p>
-                              <p className="text-[10px] font-medium pt-1">${(item.price * item.quantity).toLocaleString()}</p>
+                              <p className="text-[10px] font-medium pt-1">{formatPeso(item.price * item.quantity)}</p>
                             </div>
                           </div>
                         ))}
@@ -194,7 +195,7 @@ export default function Checkout() {
                       <div className="space-y-4 pt-10 border-t border-luxury-black/5">
                         <div className="flex justify-between text-[10px] font-bold tracking-widest uppercase">
                           <span>Subtotal</span>
-                          <span>${cartTotal.toLocaleString()}</span>
+                          <span>{formatPeso(cartTotal)}</span>
                         </div>
                         <div className="flex justify-between text-[10px] font-bold tracking-widest uppercase mb-4">
                           <span>Shipping</span>
@@ -202,7 +203,7 @@ export default function Checkout() {
                         </div>
                         <div className="flex justify-between items-baseline pt-4 border-t border-luxury-black/10">
                           <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Total</span>
-                          <span className="text-3xl font-serif">${cartTotal.toLocaleString()}</span>
+                          <span className="text-3xl font-serif">{formatPeso(cartTotal)}</span>
                         </div>
                       </div>
 

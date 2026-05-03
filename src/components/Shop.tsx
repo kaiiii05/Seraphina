@@ -6,6 +6,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { PRODUCTS } from '../data';
+import { formatPeso } from '../utils/formatPeso';
 import { Filter, ChevronDown, LayoutGrid, LayoutList } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -133,7 +134,7 @@ export default function Shop() {
                     </p>
                   )}
                   <p className="text-sm font-medium tracking-[0.2em] pt-2">
-                    ${product.price.toLocaleString()}
+                    {formatPeso(product.price)}
                   </p>
                   {viewType === 'list' && (
                     <div className="pt-4">

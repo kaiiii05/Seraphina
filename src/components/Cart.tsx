@@ -4,6 +4,7 @@
  */
 
 import { useCart } from '../context/CartContext';
+import { formatPeso } from '../utils/formatPeso';
 import { Link, useNavigate } from 'react-router-dom';
 import { X, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -93,7 +94,7 @@ export default function Cart() {
                         <Plus size={12} />
                       </button>
                     </div>
-                    <p className="text-sm font-medium">${(item.price * item.quantity).toLocaleString()}</p>
+                    <p className="text-sm font-medium">{formatPeso(item.price * item.quantity)}</p>
                   </div>
                 </div>
               </motion.div>
@@ -109,7 +110,7 @@ export default function Cart() {
             <div className="space-y-4">
               <div className="flex justify-between text-xs font-light">
                 <span className="opacity-60 uppercase tracking-widest">Subtotal</span>
-                <span>${cartTotal.toLocaleString()}</span>
+                <span>{formatPeso(cartTotal)}</span>
               </div>
               <div className="flex justify-between text-xs font-light">
                 <span className="opacity-60 uppercase tracking-widest">Digital Packaging</span>
@@ -121,7 +122,7 @@ export default function Cart() {
               </div>
               <div className="pt-6 mt-6 border-t border-luxury-black/10 flex justify-between items-baseline">
                 <span className="text-xs uppercase tracking-[0.2em] font-bold">Estimated Total</span>
-                <span className="text-2xl font-serif">${cartTotal.toLocaleString()}</span>
+                <span className="text-2xl font-serif">{formatPeso(cartTotal)}</span>
               </div>
               <p className="text-[10px] opacity-40 italic leading-relaxed pt-2">
                 Taxes are calculated based on your shipping address and will be added during checkout.
