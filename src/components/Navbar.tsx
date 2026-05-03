@@ -38,11 +38,14 @@ export default function Navbar() {
     { name: 'Story', path: '/about' },
   ];
 
+  const navOnLightBg = isScrolled || isMobileMenuOpen;
+  const heroTransparentHome = location.pathname === '/' && !navOnLightBg;
+
   return (
     <nav
       className={cn(
         'fixed top-0 left-0 w-full z-50 transition-all duration-700 h-16 border-b flex items-center shrink-0',
-        isScrolled || isMobileMenuOpen
+        navOnLightBg
           ? 'bg-white border-luxury-border shadow-sm'
           : 'bg-transparent border-transparent'
       )}
@@ -51,21 +54,34 @@ export default function Navbar() {
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden opacity-70"
+          className={cn(
+            'md:hidden transition-colors',
+            navOnLightBg || !heroTransparentHome ? 'text-luxury-black opacity-70' : 'text-white opacity-90'
+          )}
           id="mobile-menu-toggle"
         >
           {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
         {/* Desktop Left Links */}
-        <div className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.2em] uppercase font-medium">
+        <div
+          className={cn(
+            'hidden md:flex items-center gap-8 text-[11px] tracking-[0.2em] uppercase font-medium',
+            heroTransparentHome ? 'text-white' : 'text-luxury-black'
+          )}
+        >
           {navLinks.slice(0, 3).map((link) => (
             <Link
               key={link.name}
               to={link.path}
               className={cn(
                 'hover:opacity-50 transition-all border-b pb-1',
-                location.pathname + location.search === link.path ? 'border-luxury-black font-bold' : 'border-transparent'
+                location.pathname + location.search === link.path
+                  ? cn(
+                      'font-bold',
+                      heroTransparentHome ? 'border-white' : 'border-luxury-black'
+                    )
+                  : 'border-transparent'
               )}
             >
               {link.name}
@@ -74,12 +90,18 @@ export default function Navbar() {
         </div>
 
         {/* Logo */}
-        <Link to="/" className="absolute left-1/2 -translate-x-1/2 text-2xl tracking-[0.3em] font-serif font-light mb-1 uppercase">
+        <Link
+          to="/"
+          className={cn(
+            'absolute left-1/2 -translate-x-1/2 text-2xl tracking-[0.3em] font-serif font-light mb-1 uppercase transition-colors',
+            heroTransparentHome ? 'text-white' : 'text-luxury-black'
+          )}
+        >
           S E R A P H I N A
         </Link>
 
         {/* Desktop Right Links / Icons */}
-        <div className="flex gap-8 text-[11px] tracking-[0.2em] uppercase font-medium items-center">
+        <div className="flex gap-8 text-[11px] tracking-[0.2em] uppercase font-medium items-center text-luxury-black">
           <button className="hover:opacity-50 transition-opacity hidden md:block uppercase tracking-[0.2em]" id="nav-search">
             Search
           </button>
