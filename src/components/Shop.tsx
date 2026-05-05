@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { PRODUCTS } from '../data';
 import { formatPeso } from '../utils/formatPeso';
@@ -11,24 +11,38 @@ import { Filter, ChevronDown, LayoutGrid, LayoutList } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Shop() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
-  
+
+  const activeCategory =
+    categoryParam === 'Women' || categoryParam === 'Men' ? categoryParam : 'All';
+
   const [sortBy, setBy] = useState('featured');
-  const [activeCategory, setActiveCategory] = useState(categoryParam || 'All');
+
+  const setCategory = useCallback(
+    (cat: string) => {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        if (cat === 'All') next.delete('category');
+        else next.set('category', cat);
+        return next;
+      });
+    },
+    [setSearchParams]
+  );
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
 
   const categories = ['All', 'Women', 'Men'];
 
   const filteredProducts = useMemo(() => {
-    let result = activeCategory === 'All' 
-      ? PRODUCTS 
-      : PRODUCTS.filter(p => p.category === activeCategory);
+    let result =
+      activeCategory === 'All' ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeCategory);
 
     if (sortBy === 'price-low') result = [...result].sort((a, b) => a.price - b.price);
     if (sortBy === 'price-high') result = [...result].sort((a, b) => b.price - a.price);
-    
+
     return result;
   }, [activeCategory, sortBy]);
 
@@ -48,7 +62,7 @@ export default function Shop() {
           {categories.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => setCategory(cat)}
               className={`text-[10px] uppercase tracking-[0.3em] font-medium transition-all duration-300 relative pb-1 whitespace-nowrap ${
                 activeCategory === cat ? 'opacity-100' : 'opacity-40 hover:opacity-100'
               }`}
@@ -94,7 +108,7 @@ export default function Shop() {
 
       {/* Products Grid */}
       <div className={viewType === 'grid' 
-        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20" 
+        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-20" 
         : "flex flex-col gap-12"
       }>
         <AnimatePresence mode="popLayout">
@@ -151,7 +165,7 @@ export default function Shop() {
       {filteredProducts.length === 0 && (
         <div className="py-40 text-center space-y-6">
           <p className="font-serif italic text-2xl opacity-40">No items found in this selection.</p>
-          <button onClick={() => setActiveCategory('All')} className="btn-luxury-outline">View All Collection</button>
+          <button type="button" onClick={() => setCategory('All')} className="btn-luxury-outline">View All Collection</button>
         </div>
       )}
     </div>
