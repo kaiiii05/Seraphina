@@ -16,7 +16,7 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { addToCart } = useCart();
+  const { addToCart, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   
   const product = useMemo(
@@ -63,6 +63,25 @@ export default function ProductDetail() {
     );
   }
 
+  const buildCartLineImages = () => {
+    const colorMeta = product.variants?.colors?.find((c) => c.name === selectedColor);
+    return colorMeta?.image
+      ? [colorMeta.image, ...product.images.filter((i) => i !== colorMeta.image)]
+      : product.images;
+  };
+
+  const validateVariants = (): boolean => {
+    if (product.variants?.sizes && !selectedSize) {
+      alert('Please select a size');
+      return false;
+    }
+    if (product.variants?.colors?.length && !selectedColor) {
+      alert('Please select a color');
+      return false;
+    }
+    return true;
+  };
+
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       navigate('/login', {
@@ -71,26 +90,44 @@ export default function ProductDetail() {
       return;
     }
 
-    if (product.variants?.sizes && !selectedSize) {
-      alert('Please select a size');
-      return;
-    }
+    if (!validateVariants()) return;
 
-    if (product.variants?.colors?.length && !selectedColor) {
-      alert('Please select a color');
-      return;
-    }
-
-    const colorMeta = product.variants?.colors?.find((c) => c.name === selectedColor);
-    const imagesForLine = colorMeta?.image
-      ? [colorMeta.image, ...product.images.filter((i) => i !== colorMeta.image)]
-      : product.images;
+    const imagesForLine = buildCartLineImages();
 
     setIsAdding(true);
     setTimeout(() => {
       addToCart({ ...product, images: imagesForLine }, quantity, selectedSize, selectedColor);
       setIsAdding(false);
     }, 800);
+  };
+
+  const handleBuyNow = () => {
+    if (!validateVariants()) return;
+
+    if (!isAuthenticated) {
+      sessionStorage.setItem(
+        'seraphina_buy_now_pending',
+        JSON.stringify({
+          productId: product.id,
+          quantity,
+          selectedSize,
+          selectedColor,
+        })
+      );
+      navigate('/login', {
+        state: { redirectTo: '/checkout', fromBuyNow: true },
+      });
+      return;
+    }
+
+    clearCart();
+    addToCart(
+      { ...product, images: buildCartLineImages() },
+      quantity,
+      selectedSize,
+      selectedColor
+    );
+    navigate('/checkout');
   };
 
   return (
@@ -201,12 +238,13 @@ export default function ProductDetail() {
                   </div>
                 </div>
 
-                {/* Add to Cart */}
-                <div className="flex gap-4 pt-4">
+                {/* Add to Cart / Buy Now */}
+                <div className="flex flex-wrap gap-3 pt-4 items-stretch">
                   <button 
+                    type="button"
                     onClick={handleAddToCart}
                     disabled={isAdding}
-                    className="flex-1 btn-luxury flex items-center justify-center gap-3 relative overflow-hidden"
+                    className="flex-1 min-w-[140px] btn-luxury flex items-center justify-center gap-3 relative overflow-hidden"
                   >
                     <AnimatePresence mode="wait">
                       {isAdding ? (
@@ -229,7 +267,15 @@ export default function ProductDetail() {
                       )}
                     </AnimatePresence>
                   </button>
-                  <button className="p-3 border border-luxury-border hover:border-luxury-black transition-colors group">
+                  <button
+                    type="button"
+                    onClick={handleBuyNow}
+                    disabled={isAdding}
+                    className="flex-1 min-w-[140px] btn-luxury-outline text-center whitespace-nowrap"
+                  >
+                    Buy Now
+                  </button>
+                  <button type="button" className="p-3 shrink-0 border border-luxury-border hover:border-luxury-black transition-colors group self-center">
                     <Heart size={20} className="group-hover:fill-luxury-black transition-all" strokeWidth={1} />
                   </button>
                 </div>

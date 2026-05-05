@@ -3,12 +3,58 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { motion } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { formatPeso } from '../utils/formatPeso';
+import { PRODUCTS } from '../data';
+import type { Product } from '../context/CartContext';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
+
+type LoginLocationState = {
+  redirectTo?: string;
+  fromBuyNow?: boolean;
+};
+
+const BUY_NOW_STORAGE_KEY = 'seraphina_buy_now_pending';
+
+function applyBuyNowPending(
+  redirectTo: string,
+  fromBuyNow: boolean | undefined,
+  clearCart: () => void,
+  addToCart: (product: Product, quantity?: number, size?: string, color?: string) => void
+) {
+  const raw = sessionStorage.getItem(BUY_NOW_STORAGE_KEY);
+  sessionStorage.removeItem(BUY_NOW_STORAGE_KEY);
+  if (!raw || !fromBuyNow || redirectTo !== '/checkout') return;
+
+  try {
+    const pending = JSON.parse(raw) as {
+      productId: string;
+      quantity: number;
+      selectedSize?: string;
+      selectedColor?: string;
+    };
+    const p = PRODUCTS.find((x) => x.id === pending.productId);
+    if (!p) return;
+
+    const colorMeta = p.variants?.colors?.find((c) => c.name === pending.selectedColor);
+    const imagesForLine = colorMeta?.image
+      ? [colorMeta.image, ...p.images.filter((i) => i !== colorMeta.image)]
+      : p.images;
+    clearCart();
+    addToCart(
+      { ...p, images: imagesForLine },
+      Math.max(1, Number(pending.quantity) || 1),
+      pending.selectedSize,
+      pending.selectedColor
+    );
+  } catch {
+    /* ignore malformed payload */
+  }
+}
 
 export function Login() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -16,9 +62,17 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, register } = useAuth();
+  const { clearCart, addToCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.redirectTo ?? '/account';
+  const loginState = location.state as LoginLocationState | null;
+  const redirectTo = loginState?.redirectTo ?? '/account';
+
+  useEffect(() => {
+    if (!loginState?.fromBuyNow) {
+      sessionStorage.removeItem(BUY_NOW_STORAGE_KEY);
+    }
+  }, [loginState]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +81,7 @@ export function Login() {
     } else {
       login(email, password);
     }
+    applyBuyNowPending(redirectTo, loginState?.fromBuyNow, clearCart, addToCart);
     navigate(redirectTo);
   };
 
