@@ -181,10 +181,15 @@ export function Account() {
 
   return (
     <div className="pt-40 min-h-screen pb-40 px-6 md:px-12 max-w-[1200px] mx-auto">
-      <div className="flex justify-end mb-20">
+      <div className="flex flex-col md:flex-row justify-between md:items-start mb-20 gap-8">
+        <div className="space-y-3">
+          <h1 className="text-4xl md:text-5xl font-serif tracking-tight text-luxury-black">Profile</h1>
+          <p className="text-lg md:text-xl font-light text-luxury-black">{user.name}</p>
+          <p className="text-sm font-light text-luxury-black/55">{user.email}</p>
+        </div>
         <button 
           onClick={() => { logout(); navigate('/'); }}
-          className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 transition-opacity"
+          className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 transition-opacity shrink-0"
         >
           <LogOut size={14} /> Sign Out
         </button>
@@ -295,22 +300,12 @@ export function Account() {
             )}
           </section>
 
-          <section className="pt-12 border-t border-luxury-border grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-4">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Profile</h3>
-              <p className="text-xs font-light leading-relaxed opacity-60">
-                {user.name}
-                <br />
-                {user.email}
-              </p>
-              <p className="text-[10px] font-light opacity-40 italic">Phone and preferences can be added at checkout.</p>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Shipping address</h3>
-              <p className="text-xs font-light leading-relaxed opacity-60">
-                No saved address yet. Your delivery details are collected when you place an order.
-              </p>
-            </div>
+          <section className="pt-12 border-t border-luxury-border space-y-4 max-w-xl">
+            <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Shipping address</h3>
+            <p className="text-xs font-light leading-relaxed opacity-60">
+              No saved address yet. Your delivery details are collected when you place an order.
+            </p>
+            <p className="text-[10px] font-light opacity-40 italic">Phone and preferences can be added at checkout.</p>
           </section>
         </div>
       </div>
