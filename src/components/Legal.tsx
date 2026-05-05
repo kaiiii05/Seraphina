@@ -25,6 +25,9 @@ export function Terms() {
         <p className="text-xs font-light leading-relaxed opacity-70">
           Each order constitutes an offer to purchase. We reserve the right to refuse or cancel orders for any reason, including product availability or errors in pricing or product information.
         </p>
+        <p className="text-xs font-light leading-relaxed opacity-70">
+          We accept the following payment methods: Cash on Delivery; Payment Center and E-wallet; and Online Banking. Instructions or references for Payment Center/E-wallet and Online Banking will be provided when you finalize your order.
+        </p>
       </section>
     </LegalLayout>
   );

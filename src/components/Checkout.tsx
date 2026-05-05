@@ -6,11 +6,29 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, ShieldCheck, Truck, CreditCard, CheckCircle2 } from 'lucide-react';
+import { Truck, Wallet, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatPeso } from '../utils/formatPeso';
 
 type Step = 'shipping' | 'payment' | 'confirmation';
+
+const PAYMENT_OPTIONS = [
+  {
+    id: 'cod',
+    title: 'Cash on Delivery',
+    description: 'Pay with cash when your order is delivered to you.'
+  },
+  {
+    id: 'payment_center',
+    title: 'Payment Center / E-wallet',
+    description: 'Settle via partner payment centers or supported e-wallets.'
+  },
+  {
+    id: 'online_banking',
+    title: 'Online Banking',
+    description: 'Pay through your bank\'s bill payment or transfer facility.'
+  }
+] as const;
 
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -25,9 +43,7 @@ export default function Checkout() {
     city: '',
     postalCode: '',
     country: 'United States',
-    cardNumber: '',
-    expiry: '',
-    cvv: '',
+    paymentMethod: '',
     agreeToTerms: false
   });
 
@@ -42,6 +58,10 @@ export default function Checkout() {
     e.preventDefault();
     if (step === 'shipping') setStep('payment');
     else if (step === 'payment') {
+      if (!formData.paymentMethod) {
+        alert('Please select a payment method');
+        return;
+      }
       if (!formData.agreeToTerms) {
         alert('Please agree to the Terms & Conditions');
         return;
@@ -133,13 +153,32 @@ export default function Checkout() {
 
                       {step === 'payment' && (
                         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-                          <Header icon={<CreditCard size={18} strokeWidth={1} />} title="Payment Details" />
-                          <div className="grid grid-cols-1 gap-6">
-                            <Input label="Card Number" name="cardNumber" placeholder="0000 0000 0000 0000" value={formData.cardNumber} onChange={handleInputChange} required />
-                            <div className="grid grid-cols-2 gap-6">
-                              <Input label="Expiry Date" name="expiry" placeholder="MM/YY" value={formData.expiry} onChange={handleInputChange} required />
-                              <Input label="CVV" name="cvv" placeholder="000" value={formData.cvv} onChange={handleInputChange} required />
-                            </div>
+                          <Header icon={<Wallet size={18} strokeWidth={1} />} title="Payment Method" />
+                          <div className="grid grid-cols-1 gap-4">
+                            {PAYMENT_OPTIONS.map((opt) => (
+                              <label
+                                key={opt.id}
+                                className={`flex gap-4 p-5 border cursor-pointer transition-all ${
+                                  formData.paymentMethod === opt.id
+                                    ? 'border-luxury-black bg-luxury-black/[0.02]'
+                                    : 'border-luxury-border hover:border-luxury-black/40'
+                                }`}
+                              >
+                                <input
+                                  type="radio"
+                                  name="paymentMethod"
+                                  value={opt.id}
+                                  checked={formData.paymentMethod === opt.id}
+                                  onChange={handleInputChange}
+                                  className="mt-1 accent-luxury-black"
+                                  required={false}
+                                />
+                                <span className="space-y-1">
+                                  <span className="block text-[11px] font-bold uppercase tracking-[0.2em]">{opt.title}</span>
+                                  <span className="block text-[10px] font-light opacity-60 leading-relaxed">{opt.description}</span>
+                                </span>
+                              </label>
+                            ))}
                           </div>
                           
                           <div className="pt-6 space-y-4">
@@ -166,7 +205,7 @@ export default function Checkout() {
                           </button>
                         ) : <div />}
                         <button type="submit" className="btn-luxury min-w-[200px]">
-                          {step === 'shipping' ? 'Secure Payment' : 'Complete Purchase'}
+                          {step === 'shipping' ? 'Continue to Payment' : 'Complete Purchase'}
                         </button>
                       </div>
                     </form>
@@ -207,9 +246,10 @@ export default function Checkout() {
                         </div>
                       </div>
 
-                      <div className="pt-6 flex items-center justify-center gap-3 opacity-30 text-[9px] uppercase tracking-widest grayscale font-bold">
-                        <ShieldCheck size={14} />
-                        End-to-End Encrypted Secure Checkout
+                      <div className="pt-6 text-center space-y-2 opacity-50 text-[9px] uppercase tracking-widest font-bold leading-relaxed">
+                        <p>Cash on Delivery</p>
+                        <p>Payment Center / E-wallet</p>
+                        <p>Online Banking</p>
                       </div>
                     </div>
                   </div>
