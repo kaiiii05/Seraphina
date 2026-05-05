@@ -37,10 +37,10 @@ export const PRODUCTS: Product[] = [
     category: 'Bags',
     description:
       'Radiant white florals warmed by golden amber and sheer musk. Aurelle opens with bergamot and neroli, deepening into jasmine sambac on a sandalwood veil—ethereal, lasting, unmistakably Seraphina.',
-    images: [`${P.aurelle}/black.jpg`],
+    images: [`${P.aurelle}/black.png`],
     variants: {
       colors: [
-        { name: 'Black', hex: '#1c1c1c', image: `${P.aurelle}/black.jpg` },
+        { name: 'Black', hex: '#1c1c1c', image: `${P.aurelle}/black.png` },
         { name: 'Coffee', hex: '#6f4e37', image: `${P.aurelle}/coffee.jpg` },
         { name: 'Cream', hex: '#e8e0d5', image: `${P.aurelle}/cream.jpg` },
         { name: 'Red', hex: '#9b2335', image: `${P.aurelle}/red.jpg` }
