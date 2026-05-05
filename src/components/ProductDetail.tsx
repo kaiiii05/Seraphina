@@ -121,7 +121,7 @@ export default function ProductDetail() {
                 <img 
                   src={img} 
                   alt={`${product.name} - view ${idx + 1}`} 
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s]"
+                  className="w-full h-full object-contain object-center"
                 />
               </motion.div>
             ))}
@@ -290,7 +290,7 @@ export default function ProductDetail() {
                   <img 
                     src={p.images[0]} 
                     alt={p.name} 
-                    className="w-full h-full object-cover grayscale-[0.2] transition-transform duration-1000 group-hover:scale-110 group-hover:grayscale-0"
+                    className="w-full h-full object-contain object-center grayscale-[0.2] transition-[filter] duration-1000 group-hover:grayscale-0"
                   />
                 </div>
                 <h4 className="text-[10px] uppercase tracking-widest font-bold">{p.name}</h4>

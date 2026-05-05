@@ -92,7 +92,7 @@ export default function Shop() {
                     alt={product.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105 bg-luxury-neutral"
+                    className="w-full h-full object-contain object-center bg-luxury-neutral"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-luxury-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   {idx % 3 === 0 && (

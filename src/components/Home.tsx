@@ -170,7 +170,7 @@ export default function Home() {
                     alt={product.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110 bg-luxury-neutral"
+                    className="w-full h-full object-contain object-center bg-luxury-neutral"
                   />
                   <div className="absolute inset-0 bg-luxury-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700 font-serif italic text-lg">
