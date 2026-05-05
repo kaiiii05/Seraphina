@@ -14,7 +14,6 @@ import {
   getOrderLifecycle,
   ORDER_LIFECYCLE_TABS,
   ORDER_LIFECYCLE_LABEL,
-  clearAllOrders,
   type OrderLifecycle
 } from '../orderStorage';
 import { formatPeso } from '../utils/formatPeso';
@@ -170,65 +169,18 @@ export function Login() {
 type AccountSection = 'orders' | 'settings';
 
 export function Account() {
-  const { user, logout, changePassword } = useAuth();
-  const { clearCart } = useCart();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const orders = useMemo(() => listOrders(), [location.key]);
   const [activeLifecycle, setActiveLifecycle] = useState<OrderLifecycle>('to_pay');
   const [activeSection, setActiveSection] = useState<AccountSection>('orders');
 
-  const [currentPw, setCurrentPw] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const [pwFeedback, setPwFeedback] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
-
   if (!user) {
     return <Login />;
   }
 
   const filteredOrders = orders.filter((o) => getOrderLifecycle(o) === activeLifecycle);
-
-  const handleChangePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPwFeedback(null);
-    if (newPw !== confirmPw) {
-      setPwFeedback({ type: 'err', text: 'New password and confirmation do not match.' });
-      return;
-    }
-    const err = changePassword(currentPw, newPw);
-    if (err) {
-      setPwFeedback({ type: 'err', text: err });
-      return;
-    }
-    setPwFeedback({ type: 'ok', text: 'Password updated.' });
-    setCurrentPw('');
-    setNewPw('');
-    setConfirmPw('');
-  };
-
-  const handleSwitchAccount = () => {
-    logout();
-    clearCart();
-    navigate('/login', { state: { redirectTo: '/account' } });
-  };
-
-  const handleDeleteAccount = () => {
-    if (
-      !window.confirm(
-        'Delete your Seraphina account on this device? This will sign you out, clear your bag, and remove all saved orders. This cannot be undone here.'
-      )
-    ) {
-      return;
-    }
-    if (!window.confirm('This is your last chance. Permanently remove account data from this browser?')) {
-      return;
-    }
-    clearAllOrders();
-    clearCart();
-    logout();
-    navigate('/');
-  };
 
   return (
     <div className="pt-40 min-h-screen pb-40 px-6 md:px-12 max-w-[1200px] mx-auto">
@@ -266,100 +218,12 @@ export function Account() {
         {/* Content */}
         <div className="lg:col-span-8 space-y-12">
           {activeSection === 'settings' ? (
-            <section className="space-y-12 max-w-lg">
-              <div>
-                <h2 className="text-xl font-serif mb-2">Account settings</h2>
-                <p className="text-xs font-light text-luxury-black/50 leading-relaxed">
-                  Manage your sign-in on this device. Passwords are stored only in your browser for this demo.
-                </p>
-              </div>
-
-              <form onSubmit={handleChangePassword} className="space-y-6 border border-luxury-border p-8 bg-white">
-                <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Change password</h3>
-                {pwFeedback && (
-                  <p
-                    className={`text-xs font-light ${
-                      pwFeedback.type === 'ok' ? 'text-green-800' : 'text-red-700'
-                    }`}
-                  >
-                    {pwFeedback.text}
-                  </p>
-                )}
-                <div className="space-y-2">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">
-                    Current password
-                  </label>
-                  <input
-                    type="password"
-                    autoComplete="current-password"
-                    value={currentPw}
-                    onChange={(e) => setCurrentPw(e.target.value)}
-                    className="w-full bg-luxury-neutral/40 border-b border-luxury-border py-3 px-2 text-sm focus:outline-none focus:border-luxury-black font-light"
-                  />
-                  <p className="text-[10px] opacity-40">
-                    Leave blank if you signed in before passwords were saved—set a new password below.
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">
-                    New password
-                  </label>
-                  <input
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    minLength={8}
-                    value={newPw}
-                    onChange={(e) => setNewPw(e.target.value)}
-                    className="w-full bg-luxury-neutral/40 border-b border-luxury-border py-3 px-2 text-sm focus:outline-none focus:border-luxury-black font-light"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">
-                    Confirm new password
-                  </label>
-                  <input
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    minLength={8}
-                    value={confirmPw}
-                    onChange={(e) => setConfirmPw(e.target.value)}
-                    className="w-full bg-luxury-neutral/40 border-b border-luxury-border py-3 px-2 text-sm focus:outline-none focus:border-luxury-black font-light"
-                  />
-                </div>
-                <button type="submit" className="btn-luxury text-[10px] uppercase tracking-widest">
-                  Update password
-                </button>
-              </form>
-
-              <div className="border border-luxury-border p-8 bg-luxury-off-white space-y-4">
-                <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Switch account</h3>
-                <p className="text-xs font-light text-luxury-black/55 leading-relaxed">
-                  Sign out and sign in with a different email. Your bag on this device will be cleared.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleSwitchAccount}
-                  className="btn-luxury-outline text-[10px] uppercase tracking-widest"
-                >
-                  Use a different account
-                </button>
-              </div>
-
-              <div className="border border-red-800/30 p-8 bg-red-50/50 space-y-4">
-                <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold text-red-900">Delete account</h3>
-                <p className="text-xs font-light text-red-900/70 leading-relaxed">
-                  Removes your profile, saved password, orders, and bag from this browser only.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleDeleteAccount}
-                  className="px-8 py-3 text-[10px] uppercase tracking-[0.28em] font-bold border border-red-800 text-red-800 hover:bg-red-800 hover:text-white transition-colors"
-                >
-                  Delete account
-                </button>
-              </div>
+            <section className="space-y-4 max-w-lg">
+              <h2 className="text-xl font-serif">Account settings</h2>
+              <p className="text-xs font-light text-luxury-black/50 leading-relaxed">
+                Security and profile controls are not connected in this experience. Use Sign out above when you need to
+                leave your session.
+              </p>
             </section>
           ) : (
             <>
