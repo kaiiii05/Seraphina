@@ -134,3 +134,14 @@ export function updateOrderStatus(orderId: string, status: OrderStatus): void {
     /* ignore */
   }
 }
+
+/** Clears saved order history and last-order pointer (e.g. account deletion). */
+export function clearAllOrders(): void {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.removeItem(ORDERS_KEY);
+    sessionStorage.removeItem(LAST_ORDER_SESSION_KEY);
+  } catch {
+    /* ignore */
+  }
+}

@@ -16,12 +16,16 @@ interface AuthContextType {
   login: (email: string, password: string) => void;
   register: (name: string, email: string, password: string) => void;
   logout: () => void;
+  /** Returns null on success, or an error message. Demo-only: password stored locally. */
+  changePassword: (currentPassword: string, newPassword: string) => string | null;
   isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'seraphina_user_session';
+/** Demo/local only — not secure; enables change-password UX without a server. */
+const PASSWORD_KEY = 'seraphina_demo_password';
 
 function readStoredUser(): User | null {
   try {
@@ -57,6 +61,19 @@ function persistUser(user: User | null) {
   }
 }
 
+function persistSessionPassword(password: string | null) {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    if (password) {
+      localStorage.setItem(PASSWORD_KEY, password);
+    } else {
+      localStorage.removeItem(PASSWORD_KEY);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
 function displayNameFromEmail(email: string): string {
   const local = email.trim().split('@')[0] ?? '';
   if (!local) return 'Member';
@@ -73,6 +90,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setUser = (next: User | null) => {
     setUserState(next);
     persistUser(next);
+    if (!next) {
+      persistSessionPassword(null);
+    }
   };
 
   const getMemberSinceLabel = () =>
@@ -87,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: email.trim(),
       memberSince: getMemberSinceLabel(),
     });
+    persistSessionPassword(password);
   };
 
   const register = (name: string, email: string, password: string) => {
@@ -98,12 +119,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: email.trim(),
       memberSince: getMemberSinceLabel(),
     });
+    persistSessionPassword(password);
   };
 
   const logout = () => setUser(null);
 
+  const changePassword = (currentPassword: string, newPassword: string): string | null => {
+    if (!newPassword.trim()) {
+      return 'Enter a new password.';
+    }
+    if (newPassword.length < 8) {
+      return 'New password must be at least 8 characters.';
+    }
+    try {
+      if (typeof localStorage === 'undefined') {
+        return 'Storage is not available.';
+      }
+      const stored = localStorage.getItem(PASSWORD_KEY);
+      if (stored !== null && currentPassword !== stored) {
+        return 'Current password is incorrect.';
+      }
+      localStorage.setItem(PASSWORD_KEY, newPassword);
+      return null;
+    } catch {
+      return 'Could not update password.';
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider
+      value={{ user, login, register, logout, changePassword, isAuthenticated: !!user }}
+    >
       {children}
     </AuthContext.Provider>
   );
