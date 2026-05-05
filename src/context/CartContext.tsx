@@ -14,7 +14,7 @@ export interface Product {
   images: string[];
   variants?: {
     sizes?: string[];
-    colors?: { name: string; hex: string }[];
+    colors?: { name: string; hex: string; image?: string }[];
   };
 }
 

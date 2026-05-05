@@ -4,13 +4,13 @@
  */
 
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PRODUCTS } from '../data';
 import { useCart } from '../context/CartContext';
 import { formatPeso } from '../utils/formatPeso';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, ChevronLeft, Minus, Plus, Heart, Share2, Info, Truck, RefreshCw } from 'lucide-react';
+import { ChevronRight, Minus, Plus, Heart, Truck, RefreshCw } from 'lucide-react';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -24,11 +24,35 @@ export default function ProductDetail() {
     [id]
   );
   
-  const [currentImage, setCurrentImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
+
+  const colorsWithImages = useMemo(
+    () =>
+      product?.variants?.colors?.filter(
+        (c): c is { name: string; hex: string; image: string } => Boolean(c.image)
+      ) ?? [],
+    [product]
+  );
+
+  const galleryImages = useMemo(() => {
+    if (!product) return [];
+    if (colorsWithImages.length) {
+      const match = colorsWithImages.find((c) => c.name === selectedColor) ?? colorsWithImages[0];
+      return match ? [match.image] : product.images;
+    }
+    return product.images;
+  }, [product, colorsWithImages, selectedColor]);
+
+  useEffect(() => {
+    if (!product) return;
+    const first = product.variants?.colors?.[0]?.name ?? '';
+    setSelectedColor(first);
+    setSelectedSize('');
+    setQuantity(1);
+  }, [product?.id]);
 
   if (!product) {
     return (
@@ -51,10 +75,20 @@ export default function ProductDetail() {
       alert('Please select a size');
       return;
     }
-    
+
+    if (product.variants?.colors?.length && !selectedColor) {
+      alert('Please select a color');
+      return;
+    }
+
+    const colorMeta = product.variants?.colors?.find((c) => c.name === selectedColor);
+    const imagesForLine = colorMeta?.image
+      ? [colorMeta.image, ...product.images.filter((i) => i !== colorMeta.image)]
+      : product.images;
+
     setIsAdding(true);
     setTimeout(() => {
-      addToCart(product, quantity, selectedSize, selectedColor);
+      addToCart({ ...product, images: imagesForLine }, quantity, selectedSize, selectedColor);
       setIsAdding(false);
     }, 800);
   };
@@ -74,9 +108,9 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           {/* Image Gallery */}
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {product.images.map((img, idx) => (
+            {galleryImages.map((img, idx) => (
               <motion.div 
-                key={idx}
+                key={`${img}-${idx}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: idx * 0.2 }}
