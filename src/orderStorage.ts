@@ -15,6 +15,58 @@ export interface StoredOrderLine {
 
 export type OrderStatus = 'Processing' | 'Cancelled';
 
+/** Derived from payment type + calendar timeline from order date (not stored). */
+export type OrderLifecycle = 'to_pay' | 'to_ship' | 'to_receive' | 'to_rate' | 'cancelled';
+
+export const ORDER_LIFECYCLE_TABS: OrderLifecycle[] = [
+  'to_pay',
+  'to_ship',
+  'to_receive',
+  'to_rate',
+  'cancelled'
+];
+
+export const ORDER_LIFECYCLE_LABEL: Record<OrderLifecycle, string> = {
+  to_pay: 'To Pay',
+  to_ship: 'To Ship',
+  to_receive: 'To Receive',
+  to_rate: 'To Rate',
+  cancelled: 'Cancelled'
+};
+
+function endOfCalendarDay(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+}
+
+/** Timestamp (ms) for end of the calendar day that is `daysAfter` days after the order was placed. */
+function endOfDayAfterPlace(placedIso: string, daysAfter: number): number {
+  const placed = new Date(placedIso);
+  const t = new Date(placed);
+  t.setDate(t.getDate() + daysAfter);
+  return endOfCalendarDay(t).getTime();
+}
+
+/**
+ * Stages move with calendar days from placedAt (aligned with delivery estimate on order detail):
+ * - To Pay: COD only, through end of day +1
+ * - To Ship: through end of day +2 (non-COD skips To Pay)
+ * - To Receive: through end of day +3 (expected delivery window complete)
+ * - To Rate: after end of day +3
+ */
+export function getOrderLifecycle(order: StoredOrder): OrderLifecycle {
+  if (order.status === 'Cancelled') return 'cancelled';
+  const now = Date.now();
+  const isCod = order.paymentMethodId === 'cod';
+  const endPay = endOfDayAfterPlace(order.placedAt, 1);
+  const endShip = endOfDayAfterPlace(order.placedAt, 2);
+  const endDelivery = endOfDayAfterPlace(order.placedAt, 3);
+
+  if (isCod && now <= endPay) return 'to_pay';
+  if (now <= endShip) return 'to_ship';
+  if (now <= endDelivery) return 'to_receive';
+  return 'to_rate';
+}
+
 export interface StoredOrder {
   id: string;
   placedAt: string;

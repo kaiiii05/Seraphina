@@ -5,7 +5,12 @@
 
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getOrderById, updateOrderStatus } from '../orderStorage';
+import {
+  getOrderById,
+  updateOrderStatus,
+  getOrderLifecycle,
+  ORDER_LIFECYCLE_LABEL
+} from '../orderStorage';
 import { formatPeso } from '../utils/formatPeso';
 import { CreditCard, MapPin, Truck } from 'lucide-react';
 
@@ -81,10 +86,11 @@ export default function OrderDetail() {
   });
 
   const paymentUpper = order.paymentMethodLabel.toUpperCase();
-  const isCod = order.paymentMethodId === 'cod';
-  const statusTag = order.status === 'Cancelled' ? 'CANCELLED' : isCod ? 'TO PAY' : 'PAID';
+  const lifecycle = getOrderLifecycle(order);
+  const statusTag = ORDER_LIFECYCLE_LABEL[lifecycle].toUpperCase();
   const { start, end } = deliveryRange(order.placedAt);
   const cancelled = order.status === 'Cancelled';
+  const canCancel = lifecycle === 'to_pay' || lifecycle === 'to_ship';
 
   return (
     <div className="min-h-screen flex flex-col pb-0">
@@ -126,6 +132,14 @@ export default function OrderDetail() {
             <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-luxury-black/40">Delivery</p>
             {cancelled ? (
               <p className="text-sm font-light text-luxury-black/55">This order was cancelled. No delivery will be scheduled.</p>
+            ) : lifecycle === 'to_rate' ? (
+              <>
+                <p className="text-sm font-semibold tracking-wide">Expected delivery window complete</p>
+                <p className="text-sm font-light text-luxury-black/55">
+                  Your order was scheduled between {start} and {end}. It should now appear under To Rate in your account.
+                </p>
+                <p className="text-sm font-semibold pt-1">Shipping fee: Complimentary · Standard delivery</p>
+              </>
             ) : (
               <>
                 <p className="text-sm font-semibold tracking-wide">Expected delivery: 2–3 business days</p>
@@ -200,11 +214,11 @@ export default function OrderDetail() {
           </div>
         </section>
 
-        {/* Cancel */}
-        {!cancelled && (
+        {/* Cancel — only while preparing (before in transit) */}
+        {canCancel && (
           <div className="flex flex-col sm:flex-row sm:items-center gap-6 pb-8 border-b border-luxury-border">
             <p className="text-xs font-light text-luxury-black/50 leading-relaxed">
-              Need to change plans? You can cancel before this order ships.
+              Need to change plans? You can cancel while we prepare your shipment.
             </p>
             <button
               type="button"

@@ -9,7 +9,13 @@ import { useCart } from '../context/CartContext';
 import { motion } from 'motion/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../data';
-import { listOrders } from '../orderStorage';
+import {
+  listOrders,
+  getOrderLifecycle,
+  ORDER_LIFECYCLE_TABS,
+  ORDER_LIFECYCLE_LABEL,
+  type OrderLifecycle
+} from '../orderStorage';
 import { formatPeso } from '../utils/formatPeso';
 import type { Product } from '../context/CartContext';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
@@ -165,10 +171,13 @@ export function Account() {
   const navigate = useNavigate();
   const location = useLocation();
   const orders = useMemo(() => listOrders(), [location.key]);
+  const [activeLifecycle, setActiveLifecycle] = useState<OrderLifecycle>('to_pay');
 
   if (!user) {
     return <Login />;
   }
+
+  const filteredOrders = orders.filter((o) => getOrderLifecycle(o) === activeLifecycle);
 
   return (
     <div className="pt-40 min-h-screen pb-40 px-6 md:px-12 max-w-[1200px] mx-auto">
@@ -207,42 +216,87 @@ export function Account() {
                 </Link>
               </div>
             ) : (
-              <ul className="space-y-4">
-                {orders.map((o) => (
-                  <li key={o.id}>
-                    <Link
-                      to={`/orders/${o.id}`}
-                      className="group flex justify-between gap-6 border border-luxury-border bg-white p-6 hover:border-luxury-black/40 transition-colors"
-                    >
-                      <div className="space-y-2 min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold">
-                          {o.status === 'Cancelled' ? 'Cancelled' : o.lines[0]?.name ?? 'Order'}
-                        </p>
-                        <p className="text-sm font-serif truncate">
-                          {o.lines
-                            .map((l) => l.name)
-                            .filter((n, i, a) => a.indexOf(n) === i)
-                            .join(' · ')}
-                        </p>
-                        <p className="text-[10px] uppercase tracking-widest opacity-40">
-                          {o.id} ·{' '}
-                          {new Date(o.placedAt).toLocaleString(undefined, {
-                            dateStyle: 'medium',
-                            timeStyle: 'short'
-                          })}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-6 shrink-0">
-                        <div className="text-right">
-                          <p className="text-xs font-semibold">{formatPeso(o.total)}</p>
-                          <p className="text-[10px] uppercase tracking-widest opacity-45 mt-1">{o.status}</p>
-                        </div>
-                        <ChevronRight size={18} className="opacity-25 group-hover:opacity-70 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <div className="flex flex-wrap gap-x-1 gap-y-2 border-b border-luxury-border pb-1">
+                  {ORDER_LIFECYCLE_TABS.map((tab) => {
+                    const count = orders.filter((o) => getOrderLifecycle(o) === tab).length;
+                    const active = activeLifecycle === tab;
+                    return (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => setActiveLifecycle(tab)}
+                        className={`px-3 sm:px-4 py-2.5 text-[9px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] font-bold transition-colors border-b-2 -mb-px ${
+                          active
+                            ? 'border-luxury-black text-luxury-black'
+                            : 'border-transparent text-luxury-black/45 hover:text-luxury-black/70'
+                        }`}
+                      >
+                        {ORDER_LIFECYCLE_LABEL[tab]}
+                        <span className={`ml-1.5 tabular-nums ${active ? 'opacity-70' : 'opacity-40'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-[11px] font-light text-luxury-black/45 leading-relaxed -mt-2">
+                  Orders advance by schedule: Cash on Delivery stays in To Pay through day 1; then To Ship, To Receive
+                  through your delivery window, and To Rate after the expected delivery date has passed.
+                </p>
+                {filteredOrders.length === 0 ? (
+                  <div className="border border-luxury-border bg-luxury-off-white p-10 text-center">
+                    <p className="text-sm font-light text-luxury-black/55">
+                      No orders in {ORDER_LIFECYCLE_LABEL[activeLifecycle]}.
+                    </p>
+                  </div>
+                ) : (
+                  <ul className="space-y-4">
+                    {filteredOrders.map((o) => {
+                      const life = getOrderLifecycle(o);
+                      return (
+                        <li key={o.id}>
+                          <Link
+                            to={`/orders/${o.id}`}
+                            className="group flex justify-between gap-6 border border-luxury-border bg-white p-6 hover:border-luxury-black/40 transition-colors"
+                          >
+                            <div className="space-y-2 min-w-0">
+                              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold">
+                                {ORDER_LIFECYCLE_LABEL[life]}
+                              </p>
+                              <p className="text-sm font-serif truncate">
+                                {o.lines
+                                  .map((l) => l.name)
+                                  .filter((n, i, a) => a.indexOf(n) === i)
+                                  .join(' · ')}
+                              </p>
+                              <p className="text-[10px] uppercase tracking-widest opacity-40">
+                                {o.id} ·{' '}
+                                {new Date(o.placedAt).toLocaleString(undefined, {
+                                  dateStyle: 'medium',
+                                  timeStyle: 'short'
+                                })}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-6 shrink-0">
+                              <div className="text-right">
+                                <p className="text-xs font-semibold">{formatPeso(o.total)}</p>
+                                <p className="text-[10px] uppercase tracking-widest opacity-45 mt-1">
+                                  {ORDER_LIFECYCLE_LABEL[life]}
+                                </p>
+                              </div>
+                              <ChevronRight
+                                size={18}
+                                className="opacity-25 group-hover:opacity-70 transition-opacity"
+                              />
+                            </div>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
             )}
           </section>
 
