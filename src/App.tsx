@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -15,7 +15,6 @@ import ProductDetail from './components/ProductDetail';
 import Cart from './components/Cart';
 import Checkout from './components/Checkout';
 import OrderDetail from './components/OrderDetail';
-import OrdersList from './components/OrdersList';
 import { Terms, Privacy, Delivery } from './components/Legal';
 import { Account, Login } from './components/Account';
 
@@ -42,7 +41,7 @@ export default function App() {
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
-                <Route path="/orders" element={<OrdersList />} />
+                <Route path="/orders" element={<Navigate to="/account" replace />} />
                 <Route path="/orders/:orderId" element={<OrderDetail />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/login" element={<Login />} />

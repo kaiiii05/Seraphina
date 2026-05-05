@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { motion } from 'motion/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../data';
+import { listOrders } from '../orderStorage';
+import { formatPeso } from '../utils/formatPeso';
 import type { Product } from '../context/CartContext';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
 
@@ -161,6 +163,8 @@ export function Login() {
 export function Account() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const orders = useMemo(() => listOrders(), [location.key]);
 
   if (!user) {
     return <Login />;
@@ -184,7 +188,7 @@ export function Account() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
         {/* Sidebar Nav */}
         <div className="lg:col-span-4 space-y-2">
-          <AccountNavLink icon={<Package size={16} />} label="Order History" active />
+          <AccountNavLink icon={<Package size={16} />} label="Orders" active />
           <AccountNavLink icon={<CreditCard size={16} />} label="Payment Methods" />
           <AccountNavLink icon={<Settings size={16} />} label="Account Settings" />
         </div>
@@ -192,15 +196,54 @@ export function Account() {
         {/* Content */}
         <div className="lg:col-span-8 space-y-12">
           <section className="space-y-8">
-            <h2 className="text-xl font-serif">Order History</h2>
-            <div className="border border-luxury-border bg-luxury-off-white p-10 text-center space-y-6">
-              <p className="text-sm font-light text-luxury-black/60 leading-relaxed max-w-md mx-auto">
-                You have no orders yet. When you complete a purchase, it will appear here.
-              </p>
-              <Link to="/shop" className="inline-block btn-luxury-outline text-[10px] uppercase tracking-widest">
-                Browse the collection
-              </Link>
-            </div>
+            <h2 className="text-xl font-serif">Orders</h2>
+            {orders.length === 0 ? (
+              <div className="border border-luxury-border bg-luxury-off-white p-10 text-center space-y-6">
+                <p className="text-sm font-light text-luxury-black/60 leading-relaxed max-w-md mx-auto">
+                  You have no orders yet. When you complete a purchase, it will appear here.
+                </p>
+                <Link to="/shop" className="inline-block btn-luxury-outline text-[10px] uppercase tracking-widest">
+                  Browse the collection
+                </Link>
+              </div>
+            ) : (
+              <ul className="space-y-4">
+                {orders.map((o) => (
+                  <li key={o.id}>
+                    <Link
+                      to={`/orders/${o.id}`}
+                      className="group flex justify-between gap-6 border border-luxury-border bg-white p-6 hover:border-luxury-black/40 transition-colors"
+                    >
+                      <div className="space-y-2 min-w-0">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold">
+                          {o.status === 'Cancelled' ? 'Cancelled' : o.lines[0]?.name ?? 'Order'}
+                        </p>
+                        <p className="text-sm font-serif truncate">
+                          {o.lines
+                            .map((l) => l.name)
+                            .filter((n, i, a) => a.indexOf(n) === i)
+                            .join(' · ')}
+                        </p>
+                        <p className="text-[10px] uppercase tracking-widest opacity-40">
+                          {o.id} ·{' '}
+                          {new Date(o.placedAt).toLocaleString(undefined, {
+                            dateStyle: 'medium',
+                            timeStyle: 'short'
+                          })}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-6 shrink-0">
+                        <div className="text-right">
+                          <p className="text-xs font-semibold">{formatPeso(o.total)}</p>
+                          <p className="text-[10px] uppercase tracking-widest opacity-45 mt-1">{o.status}</p>
+                        </div>
+                        <ChevronRight size={18} className="opacity-25 group-hover:opacity-70 transition-opacity" />
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
 
           <section className="pt-12 border-t border-luxury-border grid grid-cols-1 md:grid-cols-2 gap-12">

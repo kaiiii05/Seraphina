@@ -221,10 +221,10 @@ export default function OrderDetail() {
       <div className="sticky bottom-0 left-0 w-full mt-auto bg-luxury-neutral/90 backdrop-blur-sm border-t border-luxury-border">
         <div className="max-w-[960px] mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
           <Link
-            to="/orders"
+            to="/account"
             className="text-[10px] uppercase tracking-[0.3em] font-bold text-luxury-black hover:opacity-60 transition-opacity"
           >
-            My orders
+            Orders
           </Link>
           <Link
             to="/shop"
