@@ -13,9 +13,7 @@ export default function Footer() {
           <div className="space-y-6">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8">Navigation</h4>
             <ul className="space-y-4">
-              <li><Link to="/shop" className="text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">Collections</Link></li>
-              <li><Link to="/shop?category=Women" className="text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">Women</Link></li>
-              <li><Link to="/shop?category=Men" className="text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">Men</Link></li>
+              <li><Link to="/shop" className="text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">Shop</Link></li>
             </ul>
           </div>
           

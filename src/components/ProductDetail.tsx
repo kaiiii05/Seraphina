@@ -100,7 +100,9 @@ export default function ProductDetail() {
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 mb-12">
           <button onClick={() => navigate('/')}>Home</button>
           <ChevronRight size={10} />
-          <button onClick={() => navigate(`/shop?category=${product.category}`)}>{product.category}</button>
+          <button type="button" onClick={() => navigate('/shop')}>
+            {product.category}
+          </button>
           <ChevronRight size={10} />
           <span className="text-luxury-black opacity-100">{product.name}</span>
         </div>

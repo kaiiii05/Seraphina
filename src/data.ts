@@ -17,7 +17,7 @@ export const PRODUCTS: Product[] = [
     id: 'velmira',
     name: 'VELMIRA',
     price: 540,
-    category: 'Men',
+    category: 'Bags',
     description:
       'Velvet rose, smoked tea, and spiced pink pepper on a resinous amber foundation. Velmira balances strength and softness—a signature for those who prefer their florals with an edge.',
     images: [`${P.velmira}/black.jpg`],
@@ -34,7 +34,7 @@ export const PRODUCTS: Product[] = [
     id: 'aurelle',
     name: 'AURELLE',
     price: 585,
-    category: 'Women',
+    category: 'Bags',
     description:
       'Radiant white florals warmed by golden amber and sheer musk. Aurelle opens with bergamot and neroli, deepening into jasmine sambac on a sandalwood veil—ethereal, lasting, unmistakably Seraphina.',
     images: [`${P.aurelle}/black.jpg`],
@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
     id: 'celestique',
     name: 'CELESTIQUE',
     price: 560,
-    category: 'Men',
+    category: 'Bags',
     description:
       'A celestial veil of iris, powdery violet, and cool aldehydes. Celestique drifts from crisp pear to a heart of orris butter, settling on a whisper of white cedar—refined, luminous, and composed.',
     images: [`${P.celestique}/black.jpg`],
@@ -67,7 +67,7 @@ export const PRODUCTS: Product[] = [
     id: 'lunaria',
     name: 'LUNARIA',
     price: 600,
-    category: 'Women',
+    category: 'Bags',
     description:
       'Night-blooming jasmine and blackcurrant over a moonlit base of patchouli and vanilla orchid. Lunaria is depth without weight—mysterious, velvety, and made for after dark.',
     images: [`${P.lunaria}/black.jpg`],

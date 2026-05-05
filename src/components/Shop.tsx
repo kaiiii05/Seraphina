@@ -3,79 +3,39 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useMemo, useCallback, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { PRODUCTS } from '../data';
 import { formatPeso } from '../utils/formatPeso';
 import { Filter, LayoutGrid, LayoutList } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Shop() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const categoryParam = searchParams.get('category');
-
-  const activeCategory =
-    categoryParam === 'Women' || categoryParam === 'Men' ? categoryParam : 'All';
-
   const [sortBy, setBy] = useState('featured');
-
-  const setCategory = useCallback(
-    (cat: string) => {
-      setSearchParams((prev) => {
-        const next = new URLSearchParams(prev);
-        if (cat === 'All') next.delete('category');
-        else next.set('category', cat);
-        return next;
-      });
-    },
-    [setSearchParams]
-  );
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
 
-  const categories = ['All', 'Women', 'Men'];
-
   const filteredProducts = useMemo(() => {
-    let result =
-      activeCategory === 'All' ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeCategory);
+    let result = [...PRODUCTS];
 
-    if (sortBy === 'price-low') result = [...result].sort((a, b) => a.price - b.price);
-    if (sortBy === 'price-high') result = [...result].sort((a, b) => b.price - a.price);
+    if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
+    if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
 
     return result;
-  }, [activeCategory, sortBy]);
+  }, [sortBy]);
 
   return (
     <div className="pt-32 min-h-screen px-6 md:px-12 max-w-[1800px] mx-auto pb-40">
       {/* Editorial Header */}
       <div className="mb-20 text-center space-y-4">
-        <h1 className="text-5xl md:text-7xl font-serif">
-          {activeCategory === 'All' ? 'The Collection' : activeCategory}
-        </h1>
+        <h1 className="text-5xl md:text-7xl font-serif">The Collection</h1>
         <p className="text-xs uppercase tracking-[0.4em] opacity-40 font-semibold">Excellence in every detail</p>
       </div>
 
       {/* Toolbar */}
       <div className="flex flex-col md:flex-row justify-between items-center border-y border-luxury-border py-6 mb-12 gap-8 sticky top-16 bg-white z-40 px-4">
-        <div className="flex items-center gap-10 overflow-x-auto w-full md:w-auto no-scrollbar">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className={`text-[10px] uppercase tracking-[0.3em] font-medium transition-all duration-300 relative pb-1 whitespace-nowrap ${
-                activeCategory === cat ? 'opacity-100' : 'opacity-40 hover:opacity-100'
-              }`}
-            >
-              {cat}
-              {activeCategory === cat && (
-                <motion.div layoutId="catUnderline" className="absolute bottom-0 left-0 w-full h-[1px] bg-luxury-black" />
-              )}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-6 md:pt-0 border-luxury-border">
+        <div className="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -176,7 +136,9 @@ export default function Shop() {
       {filteredProducts.length === 0 && (
         <div className="py-40 text-center space-y-6">
           <p className="font-serif italic text-2xl opacity-40">No items found in this selection.</p>
-          <button type="button" onClick={() => setCategory('All')} className="btn-luxury-outline">View All Collection</button>
+          <Link to="/shop" className="btn-luxury-outline inline-block">
+            View All Collection
+          </Link>
         </div>
       )}
     </div>

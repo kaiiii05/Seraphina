@@ -32,8 +32,7 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Women', path: '/shop?category=Women' },
-    { name: 'Men', path: '/shop?category=Men' },
+    { name: 'Shop', path: '/shop' },
     { name: 'Promotions', path: '/shop?promo=active' },
     { name: 'Story', path: '/about' },
   ];
