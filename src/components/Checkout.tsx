@@ -9,6 +9,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Truck, Wallet, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatPeso } from '../utils/formatPeso';
+import {
+  LAST_ORDER_SESSION_KEY,
+  persistOrder,
+  type StoredOrder
+} from '../orderStorage';
 
 type Step = 'shipping' | 'payment' | 'confirmation';
 
@@ -33,6 +38,7 @@ const PAYMENT_OPTIONS = [
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart();
   const [step, setStep] = useState<Step>('shipping');
+  const [confirmationOrderId, setConfirmationOrderId] = useState<string | null>(null);
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -66,10 +72,59 @@ export default function Checkout() {
         alert('Please agree to the Terms & Conditions');
         return;
       }
+
+      const paymentLabel =
+        PAYMENT_OPTIONS.find((o) => o.id === formData.paymentMethod)?.title ??
+        formData.paymentMethod;
+      const orderId = `SR-${Date.now()}`;
+
+      const order: StoredOrder = {
+        id: orderId,
+        placedAt: new Date().toISOString(),
+        email: formData.email.trim(),
+        status: 'Processing',
+        paymentMethodId: formData.paymentMethod,
+        paymentMethodLabel: paymentLabel,
+        shipping: {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          address: formData.address.trim(),
+          city: formData.city.trim(),
+          postalCode: formData.postalCode.trim(),
+          country: formData.country
+        },
+        lines: cart.map((item) => ({
+          productId: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.images[0] ?? '',
+          selectedSize: item.selectedSize,
+          selectedColor: item.selectedColor
+        })),
+        subtotal: cartTotal,
+        total: cartTotal
+      };
+
+      persistOrder(order);
+      setConfirmationOrderId(orderId);
       setStep('confirmation');
       setTimeout(() => {
         clearCart();
       }, 500);
+    }
+  };
+
+  const goToOrderTracking = () => {
+    const id =
+      confirmationOrderId ??
+      (typeof sessionStorage !== 'undefined'
+        ? sessionStorage.getItem(LAST_ORDER_SESSION_KEY)
+        : null);
+    if (id) {
+      navigate(`/orders/${id}`);
+    } else {
+      alert('Unable to open order details. Please try again from checkout.');
     }
   };
 
@@ -118,14 +173,19 @@ export default function Checkout() {
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-serif">Absolu Éclat</h1>
+                    <h1 className="text-4xl md:text-5xl font-serif">Order Completed</h1>
                     <p className="text-sm font-light opacity-60 max-w-sm mx-auto leading-relaxed">
-                      Thank you for your order. A confirmation has been sent to <span className="font-medium text-luxury-black">{formData.email}</span>. Your pieces of elegance will arrive shortly.
+                      Thank you for your order. A confirmation has been sent to{' '}
+                      <span className="font-medium text-luxury-black">{formData.email}</span>. We will prepare your items for delivery shortly.
                     </p>
                   </div>
                   <div className="pt-8 flex flex-col md:flex-row gap-4 justify-center">
-                    <button onClick={() => navigate('/shop')} className="btn-luxury">Continue Shopping</button>
-                    <button className="btn-luxury-outline">Track Your Order</button>
+                    <button type="button" onClick={() => navigate('/shop')} className="btn-luxury">
+                      Continue Shopping
+                    </button>
+                    <button type="button" onClick={goToOrderTracking} className="btn-luxury-outline">
+                      Track Your Order
+                    </button>
                   </div>
                 </motion.div>
               ) : (
