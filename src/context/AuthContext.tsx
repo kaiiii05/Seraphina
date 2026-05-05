@@ -21,6 +21,42 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const STORAGE_KEY = 'seraphina_user_session';
+
+function readStoredUser(): User | null {
+  try {
+    if (typeof localStorage === 'undefined') return null;
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw) as unknown;
+    if (!data || typeof data !== 'object') return null;
+    const { name, email, memberSince } = data as Partial<User>;
+    if (
+      typeof name === 'string' &&
+      typeof email === 'string' &&
+      typeof memberSince === 'string'
+    ) {
+      return { name, email, memberSince };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function persistUser(user: User | null) {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    if (user) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch {
+    /* storage disabled or quota */
+  }
+}
+
 function displayNameFromEmail(email: string): string {
   const local = email.trim().split('@')[0] ?? '';
   if (!local) return 'Member';
@@ -32,7 +68,12 @@ function displayNameFromEmail(email: string): string {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUserState] = useState<User | null>(() => readStoredUser());
+
+  const setUser = (next: User | null) => {
+    setUserState(next);
+    persistUser(next);
+  };
 
   const getMemberSinceLabel = () =>
     new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
