@@ -33,6 +33,14 @@ export default function OrderDetail() {
     timeStyle: 'short'
   });
 
+  const productHeading = useMemo(() => {
+    const names = [...new Set(order.lines.map((l) => l.name))];
+    if (names.length === 0) return order.id;
+    if (names.length === 1) return names[0];
+    if (names.length === 2) return `${names[0]} & ${names[1]}`;
+    return `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`;
+  }, [order.lines, order.id]);
+
   return (
     <div className="pt-32 min-h-screen pb-40 px-6 md:px-12 max-w-[880px] mx-auto">
       <button
@@ -45,7 +53,10 @@ export default function OrderDetail() {
 
       <div className="space-y-2 mb-16">
         <p className="text-[10px] uppercase tracking-[0.35em] text-luxury-gold font-bold">Order detail</p>
-        <h1 className="text-4xl md:text-5xl font-serif tracking-tight">{order.id}</h1>
+        <h1 className="text-4xl md:text-5xl font-serif tracking-tight">{productHeading}</h1>
+        <p className="text-[11px] uppercase tracking-widest font-semibold opacity-45 pt-1">
+          Order reference · {order.id}
+        </p>
         <div className="flex flex-wrap gap-x-10 gap-y-2 pt-4 text-[11px] uppercase tracking-widest font-semibold opacity-60">
           <span>Status: <span className="text-luxury-black">{order.status}</span></span>
           <span>Placed: <span className="text-luxury-black normal-case">{placedLabel}</span></span>
