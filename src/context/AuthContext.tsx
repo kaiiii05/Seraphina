@@ -21,6 +21,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function displayNameFromEmail(email: string): string {
+  const local = email.trim().split('@')[0] ?? '';
+  if (!local) return 'Member';
+  const words = local.replace(/[._-]+/g, ' ').split(/\s+/).filter(Boolean);
+  const titled = words
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+  return titled || 'Member';
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
@@ -31,10 +41,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!password.trim()) {
       return;
     }
-    // Simulating a successful login
     setUser({
-      name: 'Julian Vane',
-      email: email,
+      name: displayNameFromEmail(email),
+      email: email.trim(),
       memberSince: getMemberSinceLabel(),
     });
   };
@@ -44,8 +53,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     setUser({
-      name,
-      email,
+      name: name.trim() || displayNameFromEmail(email),
+      email: email.trim(),
       memberSince: getMemberSinceLabel(),
     });
   };

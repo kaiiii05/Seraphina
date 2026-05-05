@@ -7,8 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { motion } from 'motion/react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { formatPeso } from '../utils/formatPeso';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../data';
 import type { Product } from '../context/CartContext';
 import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
@@ -66,7 +65,8 @@ export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const loginState = location.state as LoginLocationState | null;
-  const redirectTo = loginState?.redirectTo ?? '/account';
+  const redirectTo =
+    loginState?.redirectTo ?? (location.pathname === '/account' ? '/account' : '/shop');
 
   useEffect(() => {
     if (!loginState?.fromBuyNow) {
@@ -166,11 +166,6 @@ export function Account() {
     return <Login />;
   }
 
-  const mockOrders = [
-    { id: 'SR-9921', date: 'Oct 12, 2025', total: 1185, status: 'Delivered' },
-    { id: 'SR-8812', date: 'Sep 04, 2025', total: 560, status: 'Processing' }
-  ];
-
   return (
     <div className="pt-40 min-h-screen pb-40 px-6 md:px-12 max-w-[1200px] mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
@@ -197,44 +192,32 @@ export function Account() {
         {/* Content */}
         <div className="lg:col-span-8 space-y-12">
           <section className="space-y-8">
-            <h2 className="text-xl font-serif">Recent Purchases</h2>
-            <div className="space-y-4">
-              {mockOrders.map(order => (
-                <div key={order.id} className="border border-luxury-border p-6 flex justify-between items-center bg-luxury-off-white group hover:border-luxury-black transition-colors cursor-pointer">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold uppercase tracking-widest">{order.id}</p>
-                    <p className="text-xs font-light opacity-50">{order.date}</p>
-                  </div>
-                  <div className="flex items-center gap-12">
-                    <div className="text-right">
-                      <p className="text-sm font-medium">{formatPeso(order.total)}</p>
-                      <p className="text-[10px] uppercase tracking-widest text-luxury-gold font-bold">{order.status}</p>
-                    </div>
-                    <ChevronRight size={16} className="opacity-20 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </div>
-              ))}
+            <h2 className="text-xl font-serif">Order History</h2>
+            <div className="border border-luxury-border bg-luxury-off-white p-10 text-center space-y-6">
+              <p className="text-sm font-light text-luxury-black/60 leading-relaxed max-w-md mx-auto">
+                You have no orders yet. When you complete a purchase, it will appear here.
+              </p>
+              <Link to="/shop" className="inline-block btn-luxury-outline text-[10px] uppercase tracking-widest">
+                Browse the collection
+              </Link>
             </div>
           </section>
 
           <section className="pt-12 border-t border-luxury-border grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-4">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Personal Presence</h3>
+              <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Profile</h3>
               <p className="text-xs font-light leading-relaxed opacity-60">
-                {user.name} <br />
-                {user.email} <br />
-                +1 (555) 012-3456
+                {user.name}
+                <br />
+                {user.email}
               </p>
-              <button className="text-[10px] underline underline-offset-4 opacity-40 hover:opacity-100 font-bold uppercase tracking-widest transition-opacity">Edit Info</button>
+              <p className="text-[10px] font-light opacity-40 italic">Phone and preferences can be added at checkout.</p>
             </div>
             <div className="space-y-4">
-              <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Primary Residence</h3>
+              <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold">Shipping address</h3>
               <p className="text-xs font-light leading-relaxed opacity-60">
-                1240 Park Avenue <br />
-                New York, NY 10128 <br />
-                United States
+                No saved address yet. Your delivery details are collected when you place an order.
               </p>
-              <button className="text-[10px] underline underline-offset-4 opacity-40 hover:opacity-100 font-bold uppercase tracking-widest transition-opacity">Manage Addresses</button>
             </div>
           </section>
         </div>
