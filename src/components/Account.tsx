@@ -181,10 +181,7 @@ export function Account() {
 
   return (
     <div className="pt-40 min-h-screen pb-40 px-6 md:px-12 max-w-[1200px] mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-        <div className="space-y-2">
-          <h1 className="text-5xl font-serif italic">Bonjour, {user.name}</h1>
-        </div>
+      <div className="flex justify-end mb-20">
         <button 
           onClick={() => { logout(); navigate('/'); }}
           className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 transition-opacity"
