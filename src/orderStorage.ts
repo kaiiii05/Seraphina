@@ -13,11 +13,13 @@ export interface StoredOrderLine {
   selectedColor?: string;
 }
 
+export type OrderStatus = 'Processing' | 'Cancelled';
+
 export interface StoredOrder {
   id: string;
   placedAt: string;
   email: string;
-  status: 'Processing';
+  status: OrderStatus;
   paymentMethodId: string;
   paymentMethodLabel: string;
   shipping: {
@@ -66,4 +68,17 @@ export function getOrderById(orderId: string): StoredOrder | undefined {
 
 export function listOrders(): StoredOrder[] {
   return readOrders();
+}
+
+export function updateOrderStatus(orderId: string, status: OrderStatus): void {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const orders = readOrders();
+    const idx = orders.findIndex((o) => o.id === orderId);
+    if (idx === -1) return;
+    orders[idx] = { ...orders[idx], status };
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+  } catch {
+    /* ignore */
+  }
 }
