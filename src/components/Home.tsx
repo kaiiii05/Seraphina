@@ -7,11 +7,11 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS } from '../data';
 import { formatPeso } from '../utils/formatPeso';
-import { ArrowRight } from 'lucide-react';
-
 export default function Home() {
   const featuredProducts = PRODUCTS;
   const heroProduct = PRODUCTS[0];
+  const craftProduct = PRODUCTS[1];
+  const campaignProduct = PRODUCTS[3];
 
   return (
     <div className="overflow-hidden">
@@ -26,10 +26,9 @@ export default function Home() {
             className="absolute inset-0 w-full h-full"
           >
             <img 
-              src="https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?q=80&w=2400&auto=format&fit=crop" 
-              alt="Luxury Editorial" 
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
+              src={heroProduct.images[0]} 
+              alt={heroProduct.name} 
+              className="w-full h-full object-contain object-center bg-luxury-neutral"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           </motion.div>
@@ -83,7 +82,7 @@ export default function Home() {
               <h2 className="text-3xl font-serif tracking-wide leading-tight">{heroProduct.name}</h2>
               <span className="text-lg font-light tracking-tighter shrink-0">{formatPeso(heroProduct.price)}</span>
             </div>
-            <p className="text-[11px] text-black/50 uppercase tracking-[0.1em]">Eau de parfum • House of Seraphina</p>
+            <p className="text-[11px] text-black/50 uppercase tracking-[0.1em]">Handcrafted leather • House of Seraphina</p>
 
             <div className="space-y-8">
               <Link to={`/product/${heroProduct.id}`} className="w-full btn-luxury inline-block text-center whitespace-nowrap">
@@ -135,10 +134,9 @@ export default function Home() {
             className="aspect-[4/5] relative bg-luxury-neutral"
           >
             <img 
-              src="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=1200&auto=format&fit=crop" 
-              alt="Artisan at work" 
-              className="w-full h-full object-cover grayscale transition-all duration-700 hover:grayscale-0"
-              referrerPolicy="no-referrer"
+              src={craftProduct.images[0]} 
+              alt={craftProduct.name} 
+              className="w-full h-full object-contain object-center bg-white"
             />
           </motion.div>
         </div>
@@ -192,10 +190,9 @@ export default function Home() {
       <section className="relative h-[80vh] w-full flex items-center px-6 md:px-24 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=2400&auto=format&fit=crop" 
-            alt="New Campaign" 
-            className="w-full h-full object-cover grayscale"
-            referrerPolicy="no-referrer"
+            src={campaignProduct.images[0]} 
+            alt={campaignProduct.name} 
+            className="w-full h-full object-contain object-center bg-luxury-neutral"
           />
           <div className="absolute inset-0 bg-luxury-black/40" />
         </div>
