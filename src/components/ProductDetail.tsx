@@ -19,7 +19,10 @@ export default function ProductDetail() {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   
-  const product = useMemo(() => PRODUCTS.find(p => p.id === id), [id]);
+  const product = useMemo(
+    () => PRODUCTS.find((p) => p.id.toLowerCase() === (id ?? '').toLowerCase()),
+    [id]
+  );
   
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
@@ -83,7 +86,6 @@ export default function ProductDetail() {
                   src={img} 
                   alt={`${product.name} - view ${idx + 1}`} 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s]"
-                  referrerPolicy="no-referrer"
                 />
               </motion.div>
             ))}
@@ -246,14 +248,13 @@ export default function ProductDetail() {
         <div className="mt-40 border-t border-luxury-border pt-20">
           <h2 className="text-3xl font-serif mb-12">Complete the Look</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {PRODUCTS.filter(p => p.id !== id).slice(0, 4).map(p => (
+            {PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4).map((p) => (
               <Link key={p.id} to={`/product/${p.id}`} className="group space-y-4 text-center">
                 <div className="aspect-[3/4] overflow-hidden bg-luxury-neutral">
                   <img 
                     src={p.images[0]} 
                     alt={p.name} 
                     className="w-full h-full object-cover grayscale-[0.2] transition-transform duration-1000 group-hover:scale-110 group-hover:grayscale-0"
-                    referrerPolicy="no-referrer"
                   />
                 </div>
                 <h4 className="text-[10px] uppercase tracking-widest font-bold">{p.name}</h4>

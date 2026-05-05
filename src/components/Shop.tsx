@@ -7,7 +7,7 @@ import { useMemo, useCallback, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { PRODUCTS } from '../data';
 import { formatPeso } from '../utils/formatPeso';
-import { Filter, ChevronDown, LayoutGrid, LayoutList } from 'lucide-react';
+import { Filter, LayoutGrid, LayoutList } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Shop() {
@@ -122,41 +122,52 @@ export default function Shop() {
               transition={{ duration: 0.6, delay: idx * 0.05 }}
               className="group"
             >
-              <Link to={`/product/${product.id}`} className={viewType === 'grid' ? "block" : "flex gap-12 items-center"}>
-                <div className={`overflow-hidden relative ${viewType === 'grid' ? "aspect-[3/4]" : "w-1/3 aspect-[4/5]"}`}>
-                  <img 
-                    src={product.images[0]} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-                    referrerPolicy="no-referrer"
+              <div className={viewType === 'grid' ? 'block' : 'flex gap-12 items-center'}>
+                <Link
+                  to={`/product/${product.id}`}
+                  className={`block overflow-hidden relative ${viewType === 'grid' ? 'aspect-[3/4]' : 'w-1/3 shrink-0 aspect-[4/5]'}`}
+                >
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105 bg-luxury-neutral"
                   />
-                  <div className="absolute inset-0 bg-luxury-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  
-                  {/* Subtle Label */}
+                  <div className="pointer-events-none absolute inset-0 bg-luxury-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                   {idx % 3 === 0 && (
-                    <div className="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[8px] uppercase tracking-[0.3em] font-bold">
+                    <div className="pointer-events-none absolute top-4 left-4 bg-white/90 px-3 py-1 text-[8px] uppercase tracking-[0.3em] font-bold">
                       Limited
                     </div>
                   )}
-                </div>
-                <div className={viewType === 'grid' ? "mt-8 text-center space-y-2" : "flex-1 space-y-4"}>
+                </Link>
+                <div
+                  className={
+                    viewType === 'grid'
+                      ? 'mt-8 flex flex-col items-center text-center space-y-4'
+                      : 'flex-1 flex flex-col space-y-4'
+                  }
+                >
                   <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold">{product.category}</p>
-                  <h3 className="text-xl font-serif tracking-wide">{product.name}</h3>
+                  <Link to={`/product/${product.id}`}>
+                    <h3 className="text-xl font-serif tracking-wide hover:opacity-70 transition-opacity">
+                      {product.name}
+                    </h3>
+                  </Link>
                   {viewType === 'list' && (
                     <p className="text-sm font-light text-luxury-black/60 max-w-xl leading-relaxed">
                       {product.description}
                     </p>
                   )}
-                  <p className="text-sm font-medium tracking-[0.2em] pt-2">
-                    {formatPeso(product.price)}
-                  </p>
-                  {viewType === 'list' && (
-                    <div className="pt-4">
-                      <button className="btn-luxury-outline py-2 px-6">View Details</button>
-                    </div>
-                  )}
+                  <p className="text-base font-semibold tracking-[0.15em]">{formatPeso(product.price)}</p>
+                  <Link
+                    to={`/product/${product.id}`}
+                    className="mt-2 w-full max-w-[240px] py-3.5 px-6 text-[10px] uppercase tracking-[0.28em] font-bold bg-white border border-luxury-black text-luxury-black hover:bg-luxury-black hover:text-white transition-colors text-center"
+                  >
+                    View product
+                  </Link>
                 </div>
-              </Link>
+              </div>
             </motion.div>
           ))}
         </AnimatePresence>
