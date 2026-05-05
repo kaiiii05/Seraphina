@@ -97,7 +97,7 @@ export default function Navbar() {
             className="hover:opacity-50 transition-opacity hidden sm:block uppercase tracking-[0.2em]" 
             id="nav-user"
           >
-            {user ? user.name.split(' ')[0] : 'Account'}
+            Account
           </Link>
           <Link to="/cart" className="hover:opacity-50 transition-opacity relative flex items-center gap-1 uppercase tracking-[0.2em]" id="nav-cart">
             Cart {cartCount > 0 && `(${cartCount})`}
