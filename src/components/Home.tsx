@@ -11,6 +11,7 @@ import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const featuredProducts = PRODUCTS.slice(0, 3);
+  const heroProduct = PRODUCTS[0];
 
   return (
     <div className="overflow-hidden">
@@ -78,22 +79,14 @@ export default function Home() {
             transition={{ delay: 1.2, duration: 1 }}
             className="space-y-12"
           >
-            <div className="flex justify-between items-start">
-              <h2 className="text-3xl font-serif tracking-wide leading-tight">Lady Seraphina <br />Signature Gown</h2>
-              <span className="text-lg font-light tracking-tighter">{formatPeso(4800)}</span>
+            <div className="flex justify-between items-start gap-6">
+              <h2 className="text-3xl font-serif tracking-wide leading-tight">{heroProduct.name}</h2>
+              <span className="text-lg font-light tracking-tighter shrink-0">{formatPeso(heroProduct.price)}</span>
             </div>
-            <p className="text-[11px] text-black/50 uppercase tracking-[0.1em]">Noir Cannage Silk with Gold-Finish Metal</p>
-            
+            <p className="text-[11px] text-black/50 uppercase tracking-[0.1em]">Eau de parfum • House of Seraphina</p>
+
             <div className="space-y-8">
-              <div>
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold block mb-4">Select Size</span>
-                <div className="flex gap-2">
-                  <button className="w-12 h-12 border border-luxury-black flex items-center justify-center text-[10px] font-bold">FR 36</button>
-                  <button className="w-12 h-12 border border-luxury-border flex items-center justify-center text-[10px] text-black/40">FR 38</button>
-                  <button className="w-12 h-12 border border-luxury-border flex items-center justify-center text-[10px] text-black/40">FR 40</button>
-                </div>
-              </div>
-              <Link to="/product/1" className="w-full btn-luxury inline-block text-center whitespace-nowrap">
+              <Link to={`/product/${heroProduct.id}`} className="w-full btn-luxury inline-block text-center whitespace-nowrap">
                 Add to Shopping Bag
               </Link>
             </div>

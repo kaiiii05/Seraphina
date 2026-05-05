@@ -112,8 +112,8 @@ export function Account() {
   }
 
   const mockOrders = [
-    { id: 'SR-9921', date: 'Oct 12, 2025', total: 268800, status: 'Delivered' },
-    { id: 'SR-8812', date: 'Sep 04, 2025', total: 156800, status: 'Processing' }
+    { id: 'SR-9921', date: 'Oct 12, 2025', total: 1185, status: 'Delivered' },
+    { id: 'SR-8812', date: 'Sep 04, 2025', total: 560, status: 'Processing' }
   ];
 
   return (
