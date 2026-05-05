@@ -51,7 +51,7 @@ export default function Navbar() {
             : 'bg-white/95 backdrop-blur-sm border-luxury-border/30'
       )}
     >
-      <div className="w-full px-6 md:px-10 flex items-center justify-between h-full">
+      <div className="w-full px-4 sm:px-6 md:px-10 flex items-center justify-between h-full">
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -82,13 +82,13 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           to="/"
-          className="absolute left-1/2 -translate-x-1/2 text-2xl tracking-[0.3em] font-serif font-light mb-1 uppercase text-luxury-black transition-colors"
+          className="absolute left-1/2 -translate-x-1/2 text-sm sm:text-xl md:text-2xl tracking-[0.18em] sm:tracking-[0.3em] font-serif font-light mb-1 uppercase text-luxury-black transition-colors whitespace-nowrap"
         >
           S E R A P H I N A
         </Link>
 
         {/* Desktop Right Links / Icons */}
-        <div className="flex gap-8 text-[11px] tracking-[0.2em] uppercase font-medium items-center text-luxury-black">
+        <div className="flex gap-3 sm:gap-6 md:gap-8 text-[10px] sm:text-[11px] tracking-[0.16em] sm:tracking-[0.2em] uppercase font-medium items-center text-luxury-black">
           <button className="hover:opacity-50 transition-opacity hidden md:block uppercase tracking-[0.2em]" id="nav-search">
             Search
           </button>
@@ -99,7 +99,7 @@ export default function Navbar() {
           >
             Account
           </Link>
-          <Link to="/cart" className="hover:opacity-50 transition-opacity relative flex items-center gap-1 uppercase tracking-[0.2em]" id="nav-cart">
+          <Link to="/cart" className="hover:opacity-50 transition-opacity relative flex items-center gap-1 uppercase tracking-[0.16em] sm:tracking-[0.2em]" id="nav-cart">
             Cart {cartCount > 0 && `(${cartCount})`}
           </Link>
         </div>

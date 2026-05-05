@@ -33,9 +33,9 @@ export default function Cart() {
 
   return (
     <div className="pt-32 min-h-screen pb-40 px-6 md:px-12 max-w-[1500px] mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+      <div className="flex flex-col md:flex-row justify-between md:items-end mb-12 md:mb-16 gap-4 md:gap-6">
         <div>
-          <h1 className="text-5xl font-serif mb-2">Shopping Bag</h1>
+          <h1 className="text-4xl md:text-5xl font-serif mb-2">Shopping Bag</h1>
           <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">{cartCount} {cartCount === 1 ? 'Item' : 'Items'}</p>
         </div>
         <Link to="/shop" className="text-[10px] uppercase tracking-widest font-bold border-b border-luxury-black/20 pb-1 hover:border-luxury-black transition-colors">
@@ -54,7 +54,7 @@ export default function Cart() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100 }}
-                className="flex gap-8 py-8 border-b border-luxury-black/5 group"
+                className="flex gap-4 md:gap-8 py-6 md:py-8 border-b border-luxury-black/5 group"
               >
                 <Link to={`/product/${item.id}`} className="w-24 md:w-32 aspect-[3/4] overflow-hidden bg-luxury-neutral">
                   <img 
@@ -83,8 +83,8 @@ export default function Cart() {
                     </button>
                   </div>
 
-                  <div className="flex justify-between items-end">
-                    <div className="flex items-center border border-luxury-black/10 px-2 py-1">
+                  <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4">
+                    <div className="flex items-center border border-luxury-black/10 px-2 py-1 w-fit">
                       <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 opacity-40 hover:opacity-100">
                         <Minus size={12} />
                       </button>

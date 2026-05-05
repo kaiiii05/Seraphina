@@ -134,7 +134,7 @@ export default function ProductDetail() {
     <div className="pt-24 min-h-screen pb-40">
       <div className="max-w-[1800px] mx-auto px-6 md:px-12">
         {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 mb-12">
+        <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 mb-8 md:mb-12">
           <button onClick={() => navigate('/')}>Home</button>
           <ChevronRight size={10} />
           <button type="button" onClick={() => navigate('/shop')}>
@@ -167,10 +167,10 @@ export default function ProductDetail() {
           {/* Product Info - Sticky */}
           <div className="lg:col-span-4 relative">
             <div className="lg:sticky lg:top-32 space-y-12">
-              <header className="space-y-4">
+              <header className="space-y-3 md:space-y-4">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-luxury-gold font-bold">{product.category}</p>
-                <h1 className="text-4xl md:text-5xl font-serif tracking-tight">{product.name}</h1>
-                <p className="text-xl font-medium tracking-widest">{formatPeso(product.price)}</p>
+                <h1 className="text-3xl md:text-5xl font-serif tracking-tight">{product.name}</h1>
+                <p className="text-lg md:text-xl font-medium tracking-widest">{formatPeso(product.price)}</p>
               </header>
 
               <div className="space-y-8">
@@ -207,7 +207,7 @@ export default function ProductDetail() {
                 {product.variants?.colors && (
                   <div className="space-y-4">
                     <span className="text-[10px] uppercase tracking-widest font-bold">Select Color: <span className="opacity-40">{selectedColor || '—'}</span></span>
-                    <div className="flex gap-4">
+                    <div className="flex gap-3 sm:gap-4 flex-wrap">
                       {product.variants.colors.map(color => (
                         <button
                           key={color.name}
@@ -327,7 +327,7 @@ export default function ProductDetail() {
         </div>
 
         {/* Suggestion Section */}
-        <div className="mt-40 border-t border-luxury-border pt-20">
+        <div className="mt-24 md:mt-40 border-t border-luxury-border pt-14 md:pt-20">
           <h2 className="text-3xl font-serif mb-12">Complete the Look</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4).map((p) => (

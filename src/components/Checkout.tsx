@@ -141,18 +141,18 @@ export default function Checkout() {
     <div className="pt-32 min-h-screen bg-luxury-neutral/30 pb-40">
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Progress Tracker */}
-        <div className="flex justify-center items-center gap-4 md:gap-12 mb-20 text-[10px] uppercase tracking-[0.3em] font-medium">
-          <div className={`flex items-center gap-3 transition-opacity ${step === 'shipping' ? 'opacity-100 font-bold' : 'opacity-40'}`}>
+        <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 md:gap-12 mb-12 md:mb-20 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] font-medium">
+          <div className={`flex items-center gap-2 sm:gap-3 transition-opacity ${step === 'shipping' ? 'opacity-100 font-bold' : 'opacity-40'}`}>
             <span className={`w-6 h-6 flex items-center justify-center border ${step === 'shipping' ? 'border-luxury-black bg-luxury-black text-white' : 'border-luxury-black/20'}`}>1</span>
             Shipping
           </div>
-          <div className="w-10 h-[1px] bg-luxury-black/10" />
-          <div className={`flex items-center gap-3 transition-opacity ${step === 'payment' ? 'opacity-100 font-bold' : 'opacity-40'}`}>
+          <div className="w-6 sm:w-10 h-[1px] bg-luxury-black/10" />
+          <div className={`flex items-center gap-2 sm:gap-3 transition-opacity ${step === 'payment' ? 'opacity-100 font-bold' : 'opacity-40'}`}>
             <span className={`w-6 h-6 flex items-center justify-center border ${step === 'payment' ? 'border-luxury-black bg-luxury-black text-white' : 'border-luxury-black/20'}`}>2</span>
             Payment
           </div>
-          <div className="w-10 h-[1px] bg-luxury-black/10" />
-          <div className={`flex items-center gap-3 transition-opacity ${step === 'confirmation' ? 'opacity-100 font-bold' : 'opacity-40'}`}>
+          <div className="w-6 sm:w-10 h-[1px] bg-luxury-black/10" />
+          <div className={`flex items-center gap-2 sm:gap-3 transition-opacity ${step === 'confirmation' ? 'opacity-100 font-bold' : 'opacity-40'}`}>
             <span className="w-6 h-6 flex items-center justify-center border border-luxury-black/20">3</span>
             Confirmation
           </div>
@@ -198,12 +198,12 @@ export default function Checkout() {
                           <Header icon={<Truck size={18} strokeWidth={1} />} title="Shipping Information" />
                           <div className="grid grid-cols-1 gap-6">
                             <Input label="Email address" name="email" type="email" value={formData.email} onChange={handleInputChange} required />
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                               <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
                               <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
                             </div>
                             <Input label="Address" name="address" value={formData.address} onChange={handleInputChange} required />
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                               <Input label="City" name="city" value={formData.city} onChange={handleInputChange} required />
                               <Input label="Postal Code" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required />
                             </div>
@@ -258,13 +258,13 @@ export default function Checkout() {
                         </motion.div>
                       )}
 
-                      <div className="pt-8 flex justify-between items-center bg-white border-t border-luxury-black/5 mt-12 pt-8">
+                      <div className="pt-8 flex flex-col-reverse sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white border-t border-luxury-black/5 mt-12">
                         {step === 'payment' ? (
                           <button type="button" onClick={() => setStep('shipping')} className="text-[10px] uppercase tracking-widest font-bold opacity-40 hover:opacity-100 transition-opacity">
                             Back to Shipping
                           </button>
                         ) : <div />}
-                        <button type="submit" className="btn-luxury min-w-[200px]">
+                        <button type="submit" className="btn-luxury min-w-0 sm:min-w-[200px] w-full sm:w-auto">
                           {step === 'shipping' ? 'Continue to Payment' : 'Complete Purchase'}
                         </button>
                       </div>

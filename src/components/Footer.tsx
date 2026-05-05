@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-luxury-border mt-20">
-      <div className="w-full px-10 py-20">
+      <div className="w-full px-6 md:px-10 py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           <div className="space-y-6">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8">Navigation</h4>
@@ -53,8 +53,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="h-12 border-t border-luxury-border flex items-center justify-between px-10 shrink-0 bg-white">
-        <div className="flex gap-6 text-[9px] tracking-[0.15em] uppercase text-luxury-black/40">
+      <div className="border-t border-luxury-border px-6 md:px-10 py-4 md:h-12 md:py-0 flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0 bg-white">
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-[9px] tracking-[0.15em] uppercase text-luxury-black/40">
           <Link to="/privacy">Privacy Policy</Link>
           <Link to="/terms">Terms of Use</Link>
           <Link to="/delivery">Returns & Refunds</Link>

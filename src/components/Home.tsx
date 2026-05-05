@@ -16,9 +16,9 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative h-screen w-full flex overflow-hidden border-b border-luxury-border">
+      <section className="relative min-h-screen w-full flex flex-col md:flex-row overflow-hidden border-b border-luxury-border">
         {/* Left: Editorial Hero (55%) */}
-        <div className="w-[55%] border-r border-luxury-border relative group bg-luxury-neutral overflow-hidden">
+        <div className="w-full md:w-[55%] md:border-r border-luxury-border relative group bg-luxury-neutral overflow-hidden min-h-[60vh] md:min-h-0">
           <motion.div 
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -33,7 +33,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           </motion.div>
           
-          <div className="absolute inset-0 flex flex-col justify-end p-16 md:p-24 text-white z-10">
+          <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10 md:p-24 text-white z-10">
             <motion.span 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 0.6, y: 0 }}
@@ -46,7 +46,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 1.2 }}
-              className="text-6xl md:text-8xl leading-[0.9] serif-italic mb-6"
+              className="text-4xl sm:text-6xl md:text-8xl leading-[0.95] serif-italic mb-4 md:mb-6"
             >
               The Ethereal <br /> Monogram
             </motion.h1>
@@ -54,7 +54,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 1 }}
-              className="text-[12px] tracking-widest uppercase mb-10 max-w-xs font-light"
+              className="text-[10px] sm:text-[12px] tracking-widest uppercase mb-8 md:mb-10 max-w-xs font-light"
             >
               An exploration of texture and heritage in modern silhouette.
             </motion.p>
@@ -71,15 +71,15 @@ export default function Home() {
         </div>
 
         {/* Right: Featured Item (45%) */}
-        <div className="w-[45%] flex flex-col bg-luxury-off-white overflow-hidden justify-center p-16 md:p-24">
+        <div className="w-full md:w-[45%] flex flex-col bg-luxury-off-white overflow-hidden justify-center p-6 sm:p-10 md:p-24">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2, duration: 1 }}
             className="space-y-12"
           >
-            <div className="flex justify-between items-start gap-6">
-              <h2 className="text-3xl font-serif tracking-wide leading-tight">{heroProduct.name}</h2>
+            <div className="flex justify-between items-start gap-4 sm:gap-6">
+              <h2 className="text-2xl sm:text-3xl font-serif tracking-wide leading-tight">{heroProduct.name}</h2>
               <span className="text-lg font-light tracking-tighter shrink-0">{formatPeso(heroProduct.price)}</span>
             </div>
             <p className="text-[11px] text-black/50 uppercase tracking-[0.1em]">Handcrafted leather • House of Seraphina</p>
@@ -104,7 +104,7 @@ export default function Home() {
       </section>
 
       {/* Featured Collection Editorial */}
-      <section className="py-40 px-6 md:px-12 max-w-[1800px] mx-auto">
+      <section className="py-24 md:py-40 px-6 md:px-12 max-w-[1800px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
@@ -143,7 +143,7 @@ export default function Home() {
       </section>
 
       {/* Trending Items Grid */}
-      <section className="bg-luxury-neutral py-32 px-6 md:px-12">
+      <section className="bg-luxury-neutral py-20 md:py-32 px-6 md:px-12">
         <div className="max-w-[1800px] mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
             <h2 className="text-4xl md:text-5xl font-serif">Trending Now</h2>
@@ -187,7 +187,7 @@ export default function Home() {
       </section>
 
       {/* Campaign Section */}
-      <section className="relative h-[80vh] w-full flex items-center px-6 md:px-24 overflow-hidden">
+      <section className="relative min-h-[65vh] md:h-[80vh] w-full flex items-center px-6 md:px-24 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src={campaignProduct.images[0]} 
@@ -204,8 +204,8 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 1 }}
           >
-            <h2 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">Limited Edition: <br />The Golden Hour</h2>
-            <p className="text-lg font-light opacity-80 mb-12 leading-relaxed">
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-serif mb-6 md:mb-8 leading-tight">Limited Edition: <br />The Golden Hour</h2>
+            <p className="text-sm sm:text-lg font-light opacity-80 mb-8 md:mb-12 leading-relaxed">
               An exclusive collection available only for the season. Discover the interplay of light and texture in pieces designed for timeless moments.
             </p>
             <Link to="/shop?collection=limited" className="btn-luxury bg-white text-luxury-black border-none">
