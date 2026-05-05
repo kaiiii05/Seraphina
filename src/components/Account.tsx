@@ -184,7 +184,6 @@ export function Account() {
       <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
         <div className="space-y-2">
           <h1 className="text-5xl font-serif italic">Bonjour, {user.name}</h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">Member Since {user.memberSince}</p>
         </div>
         <button 
           onClick={() => { logout(); navigate('/'); }}
