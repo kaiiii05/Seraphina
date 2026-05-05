@@ -38,7 +38,7 @@ export default function Navbar() {
   ];
 
   const navOnLightBg = isScrolled || isMobileMenuOpen;
-  const heroTransparentHome = location.pathname === '/' && !navOnLightBg;
+  const homeAtTop = location.pathname === '/' && !navOnLightBg;
 
   return (
     <nav
@@ -46,29 +46,23 @@ export default function Navbar() {
         'fixed top-0 left-0 w-full z-50 transition-all duration-700 h-16 border-b flex items-center shrink-0',
         navOnLightBg
           ? 'bg-white border-luxury-border shadow-sm'
-          : 'bg-transparent border-transparent'
+          : homeAtTop
+            ? 'bg-white/80 backdrop-blur-md border-luxury-border/40'
+            : 'bg-white/95 backdrop-blur-sm border-luxury-border/30'
       )}
     >
       <div className="w-full px-6 md:px-10 flex items-center justify-between h-full">
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className={cn(
-            'md:hidden transition-colors',
-            navOnLightBg || !heroTransparentHome ? 'text-luxury-black opacity-70' : 'text-white opacity-90'
-          )}
+          className="md:hidden transition-colors text-luxury-black opacity-80 hover:opacity-100"
           id="mobile-menu-toggle"
         >
           {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
         {/* Desktop Left Links */}
-        <div
-          className={cn(
-            'hidden md:flex items-center gap-8 text-[11px] tracking-[0.2em] uppercase font-medium',
-            heroTransparentHome ? 'text-white' : 'text-luxury-black'
-          )}
-        >
+        <div className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.2em] uppercase font-medium text-luxury-black">
           {navLinks.slice(0, 3).map((link) => (
             <Link
               key={link.name}
@@ -76,10 +70,7 @@ export default function Navbar() {
               className={cn(
                 'hover:opacity-50 transition-all border-b pb-1',
                 location.pathname + location.search === link.path
-                  ? cn(
-                      'font-bold',
-                      heroTransparentHome ? 'border-white' : 'border-luxury-black'
-                    )
+                  ? 'font-bold border-luxury-black'
                   : 'border-transparent'
               )}
             >
@@ -91,10 +82,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           to="/"
-          className={cn(
-            'absolute left-1/2 -translate-x-1/2 text-2xl tracking-[0.3em] font-serif font-light mb-1 uppercase transition-colors',
-            heroTransparentHome ? 'text-white' : 'text-luxury-black'
-          )}
+          className="absolute left-1/2 -translate-x-1/2 text-2xl tracking-[0.3em] font-serif font-light mb-1 uppercase text-luxury-black transition-colors"
         >
           S E R A P H I N A
         </Link>
