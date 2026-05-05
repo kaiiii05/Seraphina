@@ -4,13 +4,41 @@
  */
 
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../data';
 import { formatPeso } from '../utils/formatPeso';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import type { Product } from '../context/CartContext';
 import { Filter, LayoutGrid, LayoutList } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+const BUY_NOW_KEY = 'seraphina_buy_now_pending';
+
+function shopLinePayload(product: Product) {
+  const selectedSize = undefined as string | undefined;
+  if (product.variants?.sizes?.length) {
+    return null;
+  }
+  const selectedColor = product.variants?.colors?.[0]?.name ?? '';
+  if (product.variants?.colors?.length && !selectedColor) {
+    return null;
+  }
+  const colorMeta = product.variants?.colors?.find((c) => c.name === selectedColor);
+  const imagesForLine = colorMeta?.image
+    ? [colorMeta.image, ...product.images.filter((i) => i !== colorMeta.image)]
+    : product.images;
+  return {
+    cartProduct: { ...product, images: imagesForLine },
+    selectedSize,
+    selectedColor: product.variants?.colors?.length ? selectedColor : undefined
+  };
+}
+
 export default function Shop() {
+  const navigate = useNavigate();
+  const { addToCart, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const [sortBy, setBy] = useState('featured');
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -24,6 +52,55 @@ export default function Shop() {
 
     return result;
   }, [sortBy]);
+
+  const handleAddToCart = (product: Product) => {
+    const payload = shopLinePayload(product);
+    if (!payload) {
+      window.alert('Please open the product page to choose size or color options.');
+      navigate(`/product/${product.id}`);
+      return;
+    }
+    if (!isAuthenticated) {
+      navigate('/login', { state: { redirectTo: '/shop' } });
+      return;
+    }
+    addToCart(
+      payload.cartProduct,
+      1,
+      payload.selectedSize,
+      payload.selectedColor
+    );
+  };
+
+  const handleBuyNow = (product: Product) => {
+    const payload = shopLinePayload(product);
+    if (!payload) {
+      window.alert('Please open the product page to choose size or color options.');
+      navigate(`/product/${product.id}`);
+      return;
+    }
+    if (!isAuthenticated) {
+      sessionStorage.setItem(
+        BUY_NOW_KEY,
+        JSON.stringify({
+          productId: product.id,
+          quantity: 1,
+          selectedSize: payload.selectedSize,
+          selectedColor: payload.selectedColor
+        })
+      );
+      navigate('/login', { state: { redirectTo: '/checkout', fromBuyNow: true } });
+      return;
+    }
+    clearCart();
+    addToCart(
+      payload.cartProduct,
+      1,
+      payload.selectedSize,
+      payload.selectedColor
+    );
+    navigate('/checkout');
+  };
 
   return (
     <div className="pt-32 min-h-screen px-6 md:px-12 max-w-[1800px] mx-auto pb-40">
@@ -120,12 +197,28 @@ export default function Shop() {
                     </p>
                   )}
                   <p className="text-base font-semibold tracking-[0.15em]">{formatPeso(product.price)}</p>
-                  <Link
-                    to={`/product/${product.id}`}
-                    className="mt-2 w-full max-w-[240px] py-3.5 px-6 text-[10px] uppercase tracking-[0.28em] font-bold bg-white border border-luxury-black text-luxury-black hover:bg-luxury-black hover:text-white transition-colors text-center"
+                  <div
+                    className={
+                      viewType === 'grid'
+                        ? 'mt-2 flex flex-col gap-2 w-full max-w-[280px]'
+                        : 'mt-2 flex flex-col sm:flex-row gap-2 w-full max-w-xl'
+                    }
                   >
-                    View product
-                  </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleAddToCart(product)}
+                      className="flex-1 py-3.5 px-4 text-[9px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] font-bold bg-luxury-black text-white border border-luxury-black hover:bg-white hover:text-luxury-black transition-colors text-center"
+                    >
+                      Add to Shopping Bag
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleBuyNow(product)}
+                      className="flex-1 py-3.5 px-4 text-[9px] sm:text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] font-bold bg-white border border-luxury-black text-luxury-black hover:bg-luxury-black hover:text-white transition-colors text-center"
+                    >
+                      Buy Now
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>
