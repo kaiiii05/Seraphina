@@ -18,7 +18,7 @@ import {
 } from '../orderStorage';
 import { formatPeso } from '../utils/formatPeso';
 import type { Product } from '../context/CartContext';
-import { LogOut, Package, Settings, CreditCard, ChevronRight } from 'lucide-react';
+import { LogOut, Package, Settings, ChevronRight } from 'lucide-react';
 
 type LoginLocationState = {
   redirectTo?: string;
@@ -198,7 +198,6 @@ export function Account() {
         {/* Sidebar Nav */}
         <div className="lg:col-span-4 space-y-2">
           <AccountNavLink icon={<Package size={16} />} label="Orders" active />
-          <AccountNavLink icon={<CreditCard size={16} />} label="Payment Methods" />
           <AccountNavLink icon={<Settings size={16} />} label="Account Settings" />
         </div>
 
