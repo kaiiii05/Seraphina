@@ -138,7 +138,7 @@ export default function OrderDetail() {
                 <p className="text-sm font-light text-luxury-black/55">
                   Your order was scheduled between {start} and {end}. It should now appear under To Rate in your account.
                 </p>
-                <p className="text-sm font-semibold pt-1">Shipping fee: Complimentary · Standard delivery</p>
+                <p className="text-sm font-semibold pt-1">Shipping fee: {formatPeso(70)} · Standard delivery</p>
               </>
             ) : (
               <>
@@ -146,7 +146,7 @@ export default function OrderDetail() {
                 <p className="text-sm font-light text-luxury-black/55">
                   Estimated arrival between {start} and {end}
                 </p>
-                <p className="text-sm font-semibold pt-1">Shipping fee: Complimentary · Standard delivery</p>
+                <p className="text-sm font-semibold pt-1">Shipping fee: {formatPeso(70)} · Standard delivery</p>
               </>
             )}
           </div>

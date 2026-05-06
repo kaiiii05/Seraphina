@@ -9,9 +9,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { X, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+const SHIPPING_FEE = 70;
+
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart();
   const navigate = useNavigate();
+  const estimatedTotal = cartTotal + SHIPPING_FEE;
 
   if (cart.length === 0) {
     return (
@@ -117,11 +120,11 @@ export default function Cart() {
               </div>
               <div className="flex justify-between text-xs font-light">
                 <span className="opacity-60 uppercase tracking-widest">Shipping</span>
-                <span className="opacity-40 italic">Calculated at checkout</span>
+                <span>{formatPeso(SHIPPING_FEE)}</span>
               </div>
               <div className="pt-6 mt-6 border-t border-luxury-black/10 flex justify-between items-baseline">
                 <span className="text-xs uppercase tracking-[0.2em] font-bold">Estimated Total</span>
-                <span className="text-2xl font-serif">{formatPeso(cartTotal)}</span>
+                <span className="text-2xl font-serif">{formatPeso(estimatedTotal)}</span>
               </div>
               <p className="text-[10px] opacity-40 italic leading-relaxed pt-2">
                 Taxes are calculated based on your shipping address and will be added during checkout.

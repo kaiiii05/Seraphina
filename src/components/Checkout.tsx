@@ -36,6 +36,7 @@ const PAYMENT_OPTIONS = [
 ] as const;
 
 const BANK_CHOICES = ['Visa', 'Mastercard', 'JCB', 'Amex', 'UnionPay'] as const;
+const SHIPPING_FEE = 70;
 
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart();
@@ -43,6 +44,7 @@ export default function Checkout() {
   const [confirmationOrderId, setConfirmationOrderId] = useState<string | null>(null);
   const [bankChoice, setBankChoice] = useState<(typeof BANK_CHOICES)[number]>('Visa');
   const navigate = useNavigate();
+  const orderTotal = cartTotal + SHIPPING_FEE;
   
   const [formData, setFormData] = useState({
     email: '',
@@ -106,7 +108,7 @@ export default function Checkout() {
           selectedColor: item.selectedColor
         })),
         subtotal: cartTotal,
-        total: cartTotal
+        total: orderTotal
       };
 
       persistOrder(order);
@@ -505,11 +507,11 @@ export default function Checkout() {
                         </div>
                         <div className="flex justify-between text-[10px] font-bold tracking-widest uppercase mb-4">
                           <span>Shipping</span>
-                          <span className="text-luxury-gold">Complimentary</span>
+                          <span>{formatPeso(SHIPPING_FEE)}</span>
                         </div>
                         <div className="flex justify-between items-baseline pt-4 border-t border-luxury-black/10">
                           <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Total</span>
-                          <span className="text-3xl font-serif">{formatPeso(cartTotal)}</span>
+                          <span className="text-3xl font-serif">{formatPeso(orderTotal)}</span>
                         </div>
                       </div>
 
