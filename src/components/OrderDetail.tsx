@@ -91,6 +91,20 @@ export default function OrderDetail() {
   const { start, end } = deliveryRange(order.placedAt);
   const cancelled = order.status === 'Cancelled';
   const canCancel = lifecycle === 'to_pay' || lifecycle === 'to_ship';
+  const legacyShipping = order.shipping as unknown as {
+    firstName?: string;
+    lastName?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
+  };
+  const shippingName =
+    order.shipping.fullName || [legacyShipping.firstName, legacyShipping.lastName].filter(Boolean).join(' ');
+  const shippingAddressLines = [
+    order.shipping.address,
+    [legacyShipping.city, legacyShipping.postalCode].filter(Boolean).join(', '),
+    legacyShipping.country
+  ].filter(Boolean);
 
   return (
     <div className="min-h-screen flex flex-col pb-0">
@@ -191,14 +205,16 @@ export default function OrderDetail() {
             <div className="space-y-4 min-w-0">
               <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-luxury-black/40">Shipping address</p>
               <p className="text-sm font-light leading-relaxed text-luxury-black/65">
-                {order.shipping.firstName} {order.shipping.lastName}
-                <br />
-                {order.shipping.address}
-                <br />
-                {order.shipping.city}, {order.shipping.postalCode}
-                <br />
-                {order.shipping.country}
-                <span className="block mt-4 text-luxury-black/55">{order.email}</span>
+                {shippingName}
+                {shippingAddressLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+                {order.shipping.phoneNumber && (
+                  <span className="block mt-4 text-luxury-black/55">{order.shipping.phoneNumber}</span>
+                )}
+                <span className="block mt-1 text-luxury-black/55">{order.email}</span>
               </p>
             </div>
           </div>

@@ -46,12 +46,9 @@ export default function Checkout() {
   
   const [formData, setFormData] = useState({
     email: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    country: 'United States',
+    fullName: '',
+    phoneNumber: '',
+    shippingAddress: '',
     paymentMethod: '',
     agreeToTerms: false
   });
@@ -89,12 +86,9 @@ export default function Checkout() {
         paymentMethodId: formData.paymentMethod,
         paymentMethodLabel: paymentLabel,
         shipping: {
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          address: formData.address.trim(),
-          city: formData.city.trim(),
-          postalCode: formData.postalCode.trim(),
-          country: formData.country
+          fullName: formData.fullName.trim(),
+          phoneNumber: formData.phoneNumber.trim(),
+          address: formData.shippingAddress.trim()
         },
         lines: cart.map((item) => ({
           productId: item.id,
@@ -201,15 +195,9 @@ export default function Checkout() {
                           <Header icon={<Truck size={18} strokeWidth={1} />} title="Shipping Information" />
                           <div className="grid grid-cols-1 gap-6">
                             <Input label="Email address" name="email" type="email" value={formData.email} onChange={handleInputChange} required />
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                              <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
-                              <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
-                            </div>
-                            <Input label="Address" name="address" value={formData.address} onChange={handleInputChange} required />
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                              <Input label="City" name="city" value={formData.city} onChange={handleInputChange} required />
-                              <Input label="Postal Code" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required />
-                            </div>
+                            <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleInputChange} required />
+                            <Input label="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} required />
+                            <Input label="Shipping Address" name="shippingAddress" value={formData.shippingAddress} onChange={handleInputChange} required />
                           </div>
                         </motion.div>
                       )}

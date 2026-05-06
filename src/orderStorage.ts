@@ -75,12 +75,9 @@ export interface StoredOrder {
   paymentMethodId: string;
   paymentMethodLabel: string;
   shipping: {
-    firstName: string;
-    lastName: string;
+    fullName: string;
+    phoneNumber: string;
     address: string;
-    city: string;
-    postalCode: string;
-    country: string;
   };
   lines: StoredOrderLine[];
   subtotal: number;
