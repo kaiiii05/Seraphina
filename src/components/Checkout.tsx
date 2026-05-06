@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { Truck, Wallet, CheckCircle2, Landmark, Plus, ChevronDown, CreditCard } from 'lucide-react';
+import { Truck, Wallet, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatPeso } from '../utils/formatPeso';
 import {
@@ -35,14 +35,12 @@ const PAYMENT_OPTIONS = [
   }
 ] as const;
 
-const BANK_CHOICES = ['Visa', 'Mastercard', 'JCB', 'Amex', 'UnionPay'] as const;
 const SHIPPING_FEE = 70;
 
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart();
   const [step, setStep] = useState<Step>('shipping');
   const [confirmationOrderId, setConfirmationOrderId] = useState<string | null>(null);
-  const [bankChoice, setBankChoice] = useState<(typeof BANK_CHOICES)[number]>('Visa');
   const navigate = useNavigate();
   const orderTotal = cartTotal + SHIPPING_FEE;
   
@@ -218,236 +216,96 @@ export default function Checkout() {
 
                       {step === 'payment' && (
                         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-                          <Header icon={<Wallet size={18} strokeWidth={1} />} title="Payment Method" />
-                          <div className="grid grid-cols-1 gap-6">
-                            <label
-                              className={`block border cursor-pointer transition-all ${
-                                formData.paymentMethod === 'online_banking'
-                                  ? 'border-luxury-black bg-luxury-black/[0.015]'
-                                  : 'border-luxury-border hover:border-luxury-black/40'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between gap-4 p-5 sm:p-7 border-b border-luxury-black/10">
-                                <div className="flex items-center gap-4 sm:gap-5">
-                                  <span className="w-11 h-11 rounded-full bg-luxury-gold text-white flex items-center justify-center">
-                                    <Landmark size={18} />
-                                  </span>
-                                  <span>
-                                    <span className="block text-[11px] font-bold uppercase tracking-[0.2em]">
-                                      Online Banking
-                                    </span>
-                                    <span className="block text-[10px] font-light opacity-60 mt-1">
-                                      Continue with supported bank cards.
-                                    </span>
-                                  </span>
-                                </div>
-                                <span
-                                  className={`w-6 h-6 rounded-full border flex items-center justify-center ${
-                                    formData.paymentMethod === 'online_banking'
-                                      ? 'border-luxury-gold'
-                                      : 'border-luxury-black/25'
-                                  }`}
-                                >
-                                  <span
-                                    className={`w-2.5 h-2.5 rounded-full ${
-                                      formData.paymentMethod === 'online_banking'
-                                        ? 'bg-luxury-gold'
-                                        : 'bg-transparent'
+                          <Header icon={<Wallet size={18} strokeWidth={1} />} title="Payment" />
+                          <div className="space-y-7">
+                            <h3 className="text-4xl md:text-5xl font-serif">Payment Details</h3>
+                            <p className="text-[11px] uppercase tracking-[0.25em] text-luxury-black/45 font-semibold">
+                              Choose how you want to pay
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              {PAYMENT_OPTIONS.map((opt) => {
+                                const active = formData.paymentMethod === opt.id;
+                                return (
+                                  <label
+                                    key={opt.id}
+                                    className={`border px-4 py-3 cursor-pointer transition-colors ${
+                                      active
+                                        ? 'border-luxury-black bg-luxury-black text-white'
+                                        : 'border-luxury-border hover:border-luxury-black/40'
                                     }`}
-                                  />
-                                </span>
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="paymentMethod"
+                                      value={opt.id}
+                                      checked={active}
+                                      onChange={handleInputChange}
+                                      className="sr-only"
+                                    />
+                                    <span className="block text-[10px] uppercase tracking-[0.18em] font-bold">
+                                      {opt.title}
+                                    </span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+
+                            {formData.paymentMethod === 'online_banking' && (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                                <div className="space-y-2 sm:col-span-2">
+                                  <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">
+                                    Card Provider
+                                  </label>
+                                  <select
+                                    className="w-full bg-transparent border-b border-luxury-black py-3 px-0 text-2xl font-light focus:outline-none"
+                                    defaultValue="Visa"
+                                  >
+                                    <option>Visa</option>
+                                    <option>Mastercard</option>
+                                    <option>JCB</option>
+                                    <option>Amex</option>
+                                    <option>UnionPay</option>
+                                  </select>
+                                </div>
+                                <Input label="Cardholder Name" name="cardholderName" placeholder="Enter Full Name" />
+                                <Input label="Card Number" name="cardNumber" placeholder="0000 0000 0000 0000" />
+                                <Input label="MM/YY" name="cardExpiry" placeholder="MM/YY" />
+                                <Input label="CVV" name="cardCvv" placeholder="CVV" />
                               </div>
-                              <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="online_banking"
-                                checked={formData.paymentMethod === 'online_banking'}
-                                onChange={handleInputChange}
-                                className="sr-only"
-                              />
-                              {formData.paymentMethod === 'online_banking' && (
-                                <div className="p-5 sm:p-7 space-y-4">
-                                  <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-luxury-black/50">
-                                    Card Payment
-                                  </p>
-                                  <button
-                                    type="button"
-                                    className="w-full border border-luxury-black/80 px-4 sm:px-5 py-4 flex items-center justify-between text-left hover:border-luxury-black transition-colors"
+                            )}
+
+                            {formData.paymentMethod === 'payment_center' && (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                                <div className="space-y-2 sm:col-span-2">
+                                  <label className="text-[9px] uppercase tracking-[0.3em] font-bold opacity-40">
+                                    E-wallet / Payment Center
+                                  </label>
+                                  <select
+                                    className="w-full bg-transparent border-b border-luxury-black py-3 px-0 text-2xl font-light focus:outline-none"
+                                    defaultValue="GCash"
                                   >
-                                    <span className="flex items-center gap-3">
-                                      <span className="w-10 h-10 rounded-full bg-luxury-neutral flex items-center justify-center">
-                                        <Plus size={18} />
-                                      </span>
-                                      <span>
-                                        <span className="block text-xl leading-none mb-1">Add debit/credit card</span>
-                                        <span className="block text-sm font-light text-luxury-black/60">
-                                          Visa, Mastercard, JCB, Amex, UnionPay
-                                        </span>
-                                      </span>
-                                    </span>
-                                    <CreditCard size={22} className="text-luxury-black/45" />
-                                  </button>
-
-                                  <div className="relative">
-                                    <select
-                                      value={bankChoice}
-                                      onChange={(e) =>
-                                        setBankChoice(e.target.value as (typeof BANK_CHOICES)[number])
-                                      }
-                                      className="w-full appearance-none bg-transparent border border-luxury-black/70 py-4 px-5 text-xl font-light focus:outline-none focus:border-luxury-black"
-                                    >
-                                      {BANK_CHOICES.map((choice) => (
-                                        <option key={choice} value={choice}>
-                                          {choice}
-                                        </option>
-                                      ))}
-                                    </select>
-                                    <ChevronDown
-                                      size={18}
-                                      className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                                    />
-                                  </div>
-
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <input
-                                      type="text"
-                                      placeholder="Cardholder Name"
-                                      className="border border-luxury-black/70 py-4 px-5 text-lg font-light bg-transparent focus:outline-none focus:border-luxury-black"
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="Card Number"
-                                      className="border border-luxury-black/70 py-4 px-5 text-lg font-light bg-transparent focus:outline-none focus:border-luxury-black"
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="MM/YY"
-                                      className="border border-luxury-black/70 py-4 px-5 text-lg font-light bg-transparent focus:outline-none focus:border-luxury-black"
-                                    />
-                                    <input
-                                      type="text"
-                                      placeholder="CVV"
-                                      className="border border-luxury-black/70 py-4 px-5 text-lg font-light bg-transparent focus:outline-none focus:border-luxury-black"
-                                    />
-                                  </div>
-
-                                  <button
-                                    type="button"
-                                    className="w-full border border-luxury-black py-4 text-[11px] uppercase tracking-[0.2em] font-bold hover:bg-luxury-black hover:text-white transition-colors"
-                                  >
-                                    Save Card
-                                  </button>
+                                    <option>GCash</option>
+                                    <option>Maya</option>
+                                    <option>GrabPay</option>
+                                    <option>PalawanPay</option>
+                                  </select>
                                 </div>
-                              )}
-                            </label>
-
-                            <label
-                              className={`block border cursor-pointer transition-all ${
-                                formData.paymentMethod === 'payment_center'
-                                  ? 'border-luxury-black bg-luxury-black/[0.015]'
-                                  : 'border-luxury-border hover:border-luxury-black/40'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between gap-4 p-5 sm:p-7 border-b border-luxury-black/10">
-                                <div className="flex items-center gap-4 sm:gap-5">
-                                  <span className="w-11 h-11 rounded-full bg-luxury-gold text-white flex items-center justify-center">
-                                    <Wallet size={18} />
-                                  </span>
-                                  <span>
-                                    <span className="block text-[11px] font-bold uppercase tracking-[0.2em]">
-                                      Payment Center / E-wallet
-                                    </span>
-                                    <span className="block text-[10px] font-light opacity-60 mt-1">
-                                      Settle via payment center partners or e-wallets.
-                                    </span>
-                                  </span>
-                                </div>
-                                <span
-                                  className={`w-6 h-6 rounded-full border flex items-center justify-center ${
-                                    formData.paymentMethod === 'payment_center'
-                                      ? 'border-luxury-gold'
-                                      : 'border-luxury-black/25'
-                                  }`}
-                                >
-                                  <span
-                                    className={`w-2.5 h-2.5 rounded-full ${
-                                      formData.paymentMethod === 'payment_center'
-                                        ? 'bg-luxury-gold'
-                                        : 'bg-transparent'
-                                    }`}
-                                  />
-                                </span>
+                                <Input label="Account Name" name="walletAccountName" placeholder="Enter Full Name" />
+                                <Input label="Mobile Number" name="walletMobile" placeholder="+63 900 000 0000" />
                               </div>
-                              <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="payment_center"
-                                checked={formData.paymentMethod === 'payment_center'}
-                                onChange={handleInputChange}
-                                className="sr-only"
-                              />
-                              {formData.paymentMethod === 'payment_center' && (
-                                <div className="p-5 sm:p-7 space-y-5">
-                                  <div className="flex items-start justify-between gap-4">
-                                    <div>
-                                      <p className="text-2xl leading-none mb-2">GCash</p>
-                                      <p className="text-sm font-light text-luxury-black/65">
-                                        Choose how you want to continue.
-                                      </p>
-                                    </div>
-                                    <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-luxury-gold mt-1">
-                                      E-wallet
-                                    </p>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="w-full rounded-2xl border border-luxury-gold px-5 py-4 text-left"
-                                  >
-                                    <span className="block text-3xl leading-none mb-1">Pay without linking</span>
-                                    <span className="block text-sm font-light text-luxury-black/65">
-                                      Continue payment with GCash
-                                    </span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="w-full rounded-2xl border border-luxury-black/75 px-5 py-4 text-left flex items-center justify-between gap-4"
-                                  >
-                                    <span>
-                                      <span className="block text-3xl leading-none mb-1">Link account to pay</span>
-                                      <span className="block text-sm font-light text-luxury-black/65">
-                                        Pay instantly next time, no extra steps
-                                      </span>
-                                    </span>
-                                    <span className="text-2xl text-luxury-gold">Link</span>
-                                  </button>
-                                </div>
-                              )}
-                            </label>
+                            )}
 
-                            <label
-                              className={`flex gap-4 p-5 border cursor-pointer transition-all ${
-                                formData.paymentMethod === 'cod'
-                                  ? 'border-luxury-black bg-luxury-black/[0.02]'
-                                  : 'border-luxury-border hover:border-luxury-black/40'
-                              }`}
-                            >
-                              <input
-                                type="radio"
-                                name="paymentMethod"
-                                value="cod"
-                                checked={formData.paymentMethod === 'cod'}
-                                onChange={handleInputChange}
-                                className="mt-1 accent-luxury-black"
-                              />
-                              <span className="space-y-1">
-                                <span className="block text-[11px] font-bold uppercase tracking-[0.2em]">
+                            {formData.paymentMethod === 'cod' && (
+                              <div className="border border-luxury-border p-5">
+                                <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-luxury-black/50 mb-2">
                                   Cash on Delivery
-                                </span>
-                                <span className="block text-[10px] font-light opacity-60 leading-relaxed">
-                                  Pay with cash when your order is delivered to you.
-                                </span>
-                              </span>
-                            </label>
+                                </p>
+                                <p className="text-sm font-light text-luxury-black/65">
+                                  Please prepare the exact amount upon delivery.
+                                </p>
+                              </div>
+                            )}
                           </div>
                           
                           <div className="pt-6 space-y-4">
