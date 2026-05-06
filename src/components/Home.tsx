@@ -90,15 +90,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="pt-12 border-t border-luxury-border space-y-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-[11px] font-bold uppercase tracking-wider">Complimentary Shipping</h3>
-                  <p className="text-[10px] text-black/40 serif-italic mt-1">Standard: 2-4 business days</p>
-                </div>
-                <div className="text-[9px] uppercase border border-luxury-border px-2 py-1 font-bold">Free</div>
-              </div>
-            </div>
+            <div className="pt-12 border-t border-luxury-border" />
           </motion.div>
         </div>
       </section>
