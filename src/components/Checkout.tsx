@@ -10,7 +10,6 @@ import { Truck, Wallet, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatPeso } from '../utils/formatPeso';
 import {
-  LAST_ORDER_SESSION_KEY,
   persistOrder,
   type StoredOrder
 } from '../orderStorage';
@@ -113,16 +112,7 @@ export default function Checkout() {
   };
 
   const goToOrderTracking = () => {
-    const id =
-      confirmationOrderId ??
-      (typeof sessionStorage !== 'undefined'
-        ? sessionStorage.getItem(LAST_ORDER_SESSION_KEY)
-        : null);
-    if (id) {
-      navigate('/account');
-    } else {
-      alert('Unable to open order details. Please try again from checkout.');
-    }
+    navigate('/account');
   };
 
   if (cart.length === 0 && step !== 'confirmation') {
