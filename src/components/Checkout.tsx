@@ -119,7 +119,7 @@ export default function Checkout() {
         ? sessionStorage.getItem(LAST_ORDER_SESSION_KEY)
         : null);
     if (id) {
-      navigate(`/orders/${id}`);
+      navigate('/account');
     } else {
       alert('Unable to open order details. Please try again from checkout.');
     }
